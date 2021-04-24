@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 
 namespace IndustrialRobot.Models
 {
-    class SettingsModel
+    public class SettingsModel
     {
         //private SerialPort CurrentSerialPort { get { return $"{} {LastName}"; } }
-        public string Port { get; set; }
-        public Parity Parity{ get; set; }
+        public static string Port { get; set; }
+        //public Parity Parity{ get; set; }
+
+        SerialPort CurrentSerialPort = new SerialPort { PortName = Port };
 
     }
 }

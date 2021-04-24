@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IndustrialRobot.ViewModels
 {
-    public class ShellViewModel : Screen
+    public class ShellViewModel : Conductor<object>
     {
         private string _firstName = "Johny";
         private string _lastName;
@@ -83,6 +83,16 @@ namespace IndustrialRobot.ViewModels
         {
             FirstName = "";
             LastName = "";
+        }
+
+        public void LoadPageOne()
+        {
+            ActivateItem(new FirstChildViewModel());
+        }
+
+        public void LoadPageTwo()
+        {
+            ActivateItem(new SecondChildViewModel());
         }
 
 
