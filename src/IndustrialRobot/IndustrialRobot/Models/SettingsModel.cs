@@ -9,10 +9,10 @@ namespace IndustrialRobot.Models
 {
     public class SettingsModel
     {
-        //private SerialPort CurrentSerialPort { get { return $"{} {LastName}"; } }
         public static string Port { get; set; }
-        //public Parity Parity{ get; set; }
+        public Parity Parity{ get; set; }
         public SerialPort CurrentSerialPort { get; set; }
         public SerialPort serialPort;
+
     }
 }

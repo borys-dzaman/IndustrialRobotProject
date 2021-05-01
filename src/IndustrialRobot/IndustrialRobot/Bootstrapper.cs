@@ -18,8 +18,6 @@ namespace IndustrialRobot
 
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
-            //DisplayRootViewFor<ShellDataViewModel>();
-            //DisplayRootViewFor<ShellViewModel>();
             DisplayRootViewFor<MainViewModel>();
         }
     }
