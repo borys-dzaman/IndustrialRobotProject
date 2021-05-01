@@ -75,10 +75,13 @@
     <Compile Include="Models\DataAccess.cs" />
     <Compile Include="Models\PersonModel.cs" />
     <Compile Include="Models\SettingsModel.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\FirstChildViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\portsList.cs" />
     <Compile Include="ViewModels\SecondChildViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\ShellDataViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Views\FirstChildView.xaml.cs">
       <DependentUpon>FirstChildView.xaml</DependentUpon>
@@ -91,6 +94,9 @@
     </Compile>
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ShellDataView.xaml.cs">
+      <DependentUpon>ShellDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
@@ -139,6 +145,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ShellDataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

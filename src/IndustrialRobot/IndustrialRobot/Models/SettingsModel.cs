@@ -12,8 +12,7 @@ namespace IndustrialRobot.Models
         //private SerialPort CurrentSerialPort { get { return $"{} {LastName}"; } }
         public static string Port { get; set; }
         //public Parity Parity{ get; set; }
-
-        SerialPort CurrentSerialPort = new SerialPort { PortName = Port };
-
+        public SerialPort CurrentSerialPort { get; set; }
+        public SerialPort serialPort;
     }
 }

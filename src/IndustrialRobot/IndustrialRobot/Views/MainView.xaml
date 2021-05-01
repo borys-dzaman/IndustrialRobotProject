@@ -27,8 +27,12 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
-        <Button x:Name="StartButton" Grid.Row="1" Grid.Column="1" Content="Start" Width="160" Height="40" Margin="40"/>
-        <Button x:Name="SettingsButton" Grid.Row="2" Grid.Column="1" Content="Settings" Width="160" Height="40" Margin="40" Click="SettingsButton_Click"/>
-        <Button x:Name="ExitButton" Grid.Row="3" Grid.Column="1" Content="Exit" Width="160" Height="40" Margin="40" Click="ExitButton_Click"/>
+        <Button x:Name="StartButton" Grid.Row="1" Grid.Column="1" Content="Start" Width="160" 
+                Height="40" Margin="40" Click="StartButton_Click"/>
+        <Button x:Name="SettingsButton" Grid.Row="2" Grid.Column="1" Content="Settings" Width="160" 
+                Height="40" Margin="40" Click="SettingsButton_Click"/>
+        <Button x:Name="ExitButton" Grid.Row="3" Grid.Column="1" Content="Exit" Width="160" 
+                Height="40" Margin="40" Click="ExitButton_Click"/>
+        <Button x:Name="TestButton" Grid.Row="4" Grid.Column="1" Content="Send test data" Click="TestButton_Click"/>
     </Grid>
 </Window>

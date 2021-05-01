@@ -1,11 +1,11 @@
 ﻿using Caliburn.Micro;
-using IndustrialRobot.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using IndustrialRobot.ViewModels;
 
 namespace IndustrialRobot
 {
@@ -18,7 +18,8 @@ namespace IndustrialRobot
 
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
-            DisplayRootViewFor<ShellViewModel>();
+            //DisplayRootViewFor<ShellDataViewModel>();
+            //DisplayRootViewFor<ShellViewModel>();
             DisplayRootViewFor<MainViewModel>();
         }
     }
