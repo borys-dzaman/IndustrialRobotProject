@@ -71,6 +71,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\SettingsModel.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ViewModels\ControlPanelViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
