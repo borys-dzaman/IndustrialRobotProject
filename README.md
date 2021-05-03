@@ -1,5 +1,12 @@
 ﻿# IndustrialRobotProject
 
+CURRENT STATE: in progress
+issues:
+- !MVVM
+- tight coupling
+- probably not all exceptions handled
+- depending on Caliburn.Micro, but it is only used for Bootstrapper.cs and empty ViewModels (no functionalities used)
+
 Min requirements:
 - parametrizing serial port ✓
 - sending and receiving data through serial port (to/from robot) ✓
