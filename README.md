@@ -1,7 +1,8 @@
 ﻿# IndustrialRobotProject
 
 CURRENT STATE: in progress
-issues:
+
+Issues:
 - !MVVM
 - tight coupling
 - probably not all exceptions handled
