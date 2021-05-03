@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IndustrialRobot.Views"
         mc:Ignorable="d"
-        Title="Control Panel" Height="600" Width="360" FontSize="20" FontFamily="Times New Roman" Closed="Window_Closed">
+        Title="Control Panel" Height="660" Width="360" FontSize="20" FontFamily="Times New Roman" Closed="Window_Closed">
     <Grid>
         <TabControl>
             <TabItem Header="Command Tool">
@@ -66,6 +66,7 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="20" />
                     </Grid.RowDefinitions>
@@ -98,6 +99,13 @@
 
                     <Button x:Name="OpenGripButton" Grid.Row="11" Grid.Column="1" Grid.ColumnSpan="2" Margin="10" Click="OpenGripButton_Click">Open grip</Button>
                     <Button x:Name="CloseGripButton" Grid.Row="12" Grid.Column="1" Grid.ColumnSpan="2" Margin="10" Click="CloseGripButton_Click">Close grip</Button>
+
+                    <RadioButton x:Name="UltraSafeModeRadioButton" Grid.Row="13" Grid.Column="2" IsChecked="True" Checked="UltraSafeModeRadioButton_Checked" Margin="0,5,0,0"></RadioButton>
+                    <Label Grid.Row="13" Grid.Column="1" FontSize="12">Ultra Safe Mode</Label>
+                    <RadioButton x:Name="SafeModeRadioButton" Grid.Row="14" Grid.Column="2" Checked="SafeModeRadioButton_Checked" Margin="0,5,0,0"></RadioButton>
+                    <Label Grid.Row="14" Grid.Column="1" FontSize="12">Safe Mode</Label>
+                    <RadioButton x:Name="LudicrousModeRadioButton" Grid.Row="15" Grid.Column="2" Checked="LudicrousModeRadioButton_Checked" Margin="0,5,0,0" Click="LudicrousModeRadioButton_Click"></RadioButton>
+                    <Label Grid.Row="15" Grid.Column="1" FontSize="12">Ludicrous Mode</Label>
                 </Grid>
 
             </TabItem>
