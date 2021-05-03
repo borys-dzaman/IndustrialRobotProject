@@ -31,10 +31,10 @@ namespace IndustrialRobot.Views
             GetSettings();
 
             portsList = SerialPort.GetPortNames();
-            foreach (string ports in portsList) this.PortComboBox.Items.Add(ports);
+            foreach (string ports in portsList) PortComboBox.Items.Add(ports);
 
             paritiesList = Enum.GetNames(typeof(Parity));
-            foreach (string parities in paritiesList) this.ParityComboBox.Items.Add(parities);
+            foreach (string parities in paritiesList) ParityComboBox.Items.Add(parities);
 
             BaudRateComboBox.Items.Add("4800");
             BaudRateComboBox.Items.Add("9600");
@@ -46,7 +46,7 @@ namespace IndustrialRobot.Views
             DataBitsComboBox.Items.Add("8");
 
             stopBitsList = Enum.GetNames(typeof(StopBits));
-            foreach (string stopBits in stopBitsList) this.StopBitsComboBox.Items.Add(stopBits);
+            foreach (string stopBits in stopBitsList) StopBitsComboBox.Items.Add(stopBits);
         }
         private void SaveAndExitButton_Click(object sender, RoutedEventArgs e)
         {
@@ -67,7 +67,7 @@ namespace IndustrialRobot.Views
 
         public void GetSettings()
         {
-            PortComboBox.SelectedItem = (string)Properties.Settings.Default.Port;
+            PortComboBox.SelectedItem = Properties.Settings.Default.Port;
             ParityComboBox.SelectedItem = Convert.ToString(Properties.Settings.Default.Parity);
             BaudRateComboBox.SelectedItem = Convert.ToString(Properties.Settings.Default.BaudRate);
             DataBitsComboBox.SelectedItem = Convert.ToString(Properties.Settings.Default.DataBits);
