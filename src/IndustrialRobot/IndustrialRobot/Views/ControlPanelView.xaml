@@ -39,7 +39,7 @@
                     <TextBox x:Name="ResponseTextBox" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,5,0,5" IsReadOnly="True" Width="160"></TextBox>
                 </Grid>
             </TabItem>
-            <TabItem Header="Jog Operations">
+            <TabItem Header="Jog Operation">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="20" />
