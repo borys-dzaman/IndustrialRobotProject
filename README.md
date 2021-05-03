@@ -1,10 +1,10 @@
 ﻿# IndustrialRobotProject
 
 Min requirements:
-✓- parametrizing serial port 
-✓- sending and receiving data through serial port (to/from robot)
-✓- sending manual-typed commands
-✓- JOINT jog operation to control robot movement in configuration space
+- parametrizing serial port ✓
+- sending and receiving data through serial port (to/from robot) ✓
+- sending manual-typed commands ✓
+- JOINT jog operation to control robot movement in configuration space ✓
 
 Extra requirements:
 - uploading/downloading position list
