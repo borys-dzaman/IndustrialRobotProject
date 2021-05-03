@@ -20,7 +20,7 @@ namespace IndustrialRobot.Views
     /// </summary>
     public partial class MainView : Window
     {
-        SerialPort serialPort = new SerialPort();
+        public SerialPort serialPort = new SerialPort();
         public MainView()
         {
             InitializeComponent();
@@ -38,23 +38,26 @@ namespace IndustrialRobot.Views
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
-        {
+        {           
             serialPort.Close();
-            if (serialPort.IsOpen == false)
+            try
             {
-                serialPort.PortName = Properties.Settings.Default.Port;
-                serialPort.BaudRate = Properties.Settings.Default.BaudRate;
-                serialPort.Parity = Properties.Settings.Default.Parity;
-                serialPort.DataBits = Properties.Settings.Default.DataBits;
-                serialPort.StopBits = Properties.Settings.Default.StopBits;
-                serialPort.Open();
-                //serialPort.DtrEnable = true; //do terminala
+                if (serialPort.IsOpen == false)
+                {
+                    serialPort.PortName = Properties.Settings.Default.Port;
+                    serialPort.BaudRate = Properties.Settings.Default.BaudRate;
+                    serialPort.Parity = Properties.Settings.Default.Parity;
+                    serialPort.DataBits = Properties.Settings.Default.DataBits;
+                    serialPort.StopBits = Properties.Settings.Default.StopBits;
+                    serialPort.Open();
+                }
+                ControlPanelView controlPanelView = new ControlPanelView(this);
+                controlPanelView.ShowDialog();
             }
-        }
-
-        private void TestButton_Click(object sender, RoutedEventArgs e)
-        {
-            serialPort.WriteLine("Test" + "\r");
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

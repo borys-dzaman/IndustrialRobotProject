@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace IndustrialRobot.ViewModels
 {
-    public class MainViewModel : Screen
+    class ControlPanelViewModel : Screen
     {
 
     }
