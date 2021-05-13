@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IndustrialRobot.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="330" Width="215" FontSize="20" FontFamily="Times New Roman">
+        Title="Start panel" Height="260" Width="220" FontSize="20" FontFamily="Times New Roman" Style="{DynamicResource CustomWindowStyle}">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="30" />
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
@@ -16,16 +16,12 @@
             <ColumnDefinition Width="20" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20" />
+            <RowDefinition Height="30" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="20" />
+            
+            <RowDefinition Height="30" />
         </Grid.RowDefinitions>
         <Button x:Name="StartButton" Grid.Row="1" Grid.Column="1" Content="Start" Width="160" Height="40" Margin="0,0,0,20" Click="StartButton_Click"/>
         <Button x:Name="SettingsButton" Grid.Row="2" Grid.Column="1" Content="Settings" Width="160" Height="40" Margin="0,0,0,20" Click="SettingsButton_Click"/>
