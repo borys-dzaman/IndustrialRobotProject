@@ -41,8 +41,8 @@ namespace IndustrialRobot.Views
             mainView.Hide();
             InitializeComponent();
             main.serialPort.DataReceived += new SerialDataReceivedEventHandler(IncomingDataEvent);
-            Uri iconUri = new Uri("rve2.png", UriKind.RelativeOrAbsolute);
-            this.Icon = BitmapFrame.Create(iconUri);
+            //Uri iconUri = new Uri("rve2.png", UriKind.RelativeOrAbsolute);
+            //this.Icon = BitmapFrame.Create(iconUri);
             PositionNumberTextBox.Text = positionNumber.ToString();
             UltraSafeMenuItem.Click += new RoutedEventHandler(UltraSafeModeRadioButton_Checked);  
             SafeMenuItem.Click += new RoutedEventHandler(SafeModeRadioButton_Checked);

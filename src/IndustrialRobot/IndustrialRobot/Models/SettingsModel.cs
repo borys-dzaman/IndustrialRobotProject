@@ -11,9 +11,9 @@ namespace IndustrialRobot.Models
     {
         public string Port { get; set; }
         public Parity Parity{ get; set; }        
-        public StopBits stopBits { get; set; }
-        public int dataBits { get; set; }
-        public int baudRate { get; set; }
-        public static SerialPort serialPort { get; set; }
+        public StopBits StopBits { get; set; }
+        public int DataBits { get; set; }
+        public int BaudRate { get; set; }
+        public SerialPort SerialPort { get; set; }
     }
 }

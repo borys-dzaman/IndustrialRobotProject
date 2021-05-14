@@ -24,8 +24,8 @@ namespace IndustrialRobot.Views
         public MainView()
         {
             InitializeComponent();
-            Uri iconUri = new Uri("rve2.png", UriKind.RelativeOrAbsolute);
-            this.Icon = BitmapFrame.Create(iconUri);
+            //Uri iconUri = new Uri("rve2.png", UriKind.RelativeOrAbsolute);
+            //this.Icon = BitmapFrame.Create(iconUri);
         }
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {

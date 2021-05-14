@@ -29,8 +29,8 @@ namespace IndustrialRobot.Views
         {
             InitializeComponent();
             GetSettings();
-            Uri iconUri = new Uri("rve2.png", UriKind.RelativeOrAbsolute);
-            this.Icon = BitmapFrame.Create(iconUri);
+            //Uri iconUri = new Uri("rve2.png", UriKind.RelativeOrAbsolute);
+            //this.Icon = BitmapFrame.Create(iconUri);
 
             portsList = SerialPort.GetPortNames();
             foreach (string ports in portsList) PortComboBox.Items.Add(ports);
