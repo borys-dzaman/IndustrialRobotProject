@@ -24,6 +24,8 @@ namespace IndustrialRobot.Views
         public MainView()
         {
             InitializeComponent();
+            Uri iconUri = new Uri("rve2.png", UriKind.RelativeOrAbsolute);
+            this.Icon = BitmapFrame.Create(iconUri);
         }
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -52,6 +54,8 @@ namespace IndustrialRobot.Views
                     serialPort.Open();
                 }
                 ControlPanelView controlPanelView = new ControlPanelView(this);
+                serialPort.Write("SP 1" + "\r");
+                serialPort.Write("WH" + "\r");
                 controlPanelView.ShowDialog();
             }
             catch (Exception ex)
