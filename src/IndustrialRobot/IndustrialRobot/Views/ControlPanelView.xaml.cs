@@ -46,7 +46,7 @@ namespace IndustrialRobot.Views
             //for (int i = 1; i < 1000; i++) positionNumberList.Insert(i, $"Pos. {i}:");
             UltraSafeMenuItem.Click += new RoutedEventHandler(UltraSafeModeRadioButton_Checked);  
             SafeMenuItem.Click += new RoutedEventHandler(SafeModeRadioButton_Checked);
-            LudicrousMenuItem.Click += new RoutedEventHandler(LudicrousModeRadioButton_Checked);
+            //LudicrousMenuItem.Click += new RoutedEventHandler(LudicrousModeRadioButton_Checked);
             LudicrousMenuItem.Click += new RoutedEventHandler(LudicrousModeRadioButton_Click);
         }
 
@@ -400,9 +400,6 @@ namespace IndustrialRobot.Views
             JogSpeedSlider.IsEnabled = false;
             TurningAngleSlider.IsEnabled = false;
             JogSpeedSlider.Maximum = 1;
-            //LinearSpeedSlider.Value = 1;
-            //LinearSpeedSlider.IsEnabled = false;
-            //LinearSpeedSlider.Maximum = 1;
             myThickness = new Thickness();
             myThickness.Bottom = 28;
             myThickness.Left = 0;
@@ -423,8 +420,6 @@ namespace IndustrialRobot.Views
             JogSpeedSlider.IsEnabled = true;
             TurningAngleSlider.IsEnabled = true;
             JogSpeedSlider.Maximum = 10;
-            //LinearSpeedSlider.IsEnabled = true;
-            //LinearSpeedSlider.Maximum = 20;
             myThickness = new Thickness();
             myThickness.Bottom = 28;
             myThickness.Left = 0;
@@ -446,8 +441,6 @@ namespace IndustrialRobot.Views
             JogSpeedSlider.IsEnabled = true;
             TurningAngleSlider.IsEnabled = true;
             JogSpeedSlider.Maximum = 30;
-            //LinearSpeedSlider.IsEnabled = true;
-            //LinearSpeedSlider.Maximum = 650;
             myThickness = new Thickness();
             myThickness.Bottom = 28;
             myThickness.Left = 0;
@@ -470,13 +463,18 @@ namespace IndustrialRobot.Views
                 if (UltraSafeMenuItem.IsChecked == true) UltraSafeMenuItem.IsChecked = false;
                 if (SafeMenuItem.IsChecked == true) SafeMenuItem.IsChecked = false;
                 if (LudicrousMenuItem.IsChecked == false) LudicrousMenuItem.IsChecked = true;
+                LinearSpeedSlider.IsEnabled = true;
+                LinearSpeedSlider.Maximum = 650;
             }
                 
             else
             {
+                UltraSafeModeRadioButton.IsChecked = true;
                 if (UltraSafeMenuItem.IsChecked == false) UltraSafeMenuItem.IsChecked = true;
                 if (SafeMenuItem.IsChecked == true) SafeMenuItem.IsChecked = false;
                 if (LudicrousMenuItem.IsChecked == true) LudicrousMenuItem.IsChecked = false;
+                LinearSpeedSlider.Value = 1;
+                LinearSpeedSlider.IsEnabled = false;
             }                      
         }
         private void ChangeTheme(object sender, RoutedEventArgs e)
@@ -553,7 +551,7 @@ namespace IndustrialRobot.Views
             {
                 if (blockButton == false)
                 {
-                    main.serialPort.Write("SD " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
                     main.serialPort.Write("DS " + XYZIncrement.Text + ",0,0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
@@ -575,7 +573,7 @@ namespace IndustrialRobot.Views
             {
                 if (blockButton == false)
                 {
-                    main.serialPort.Write("SD " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
                     main.serialPort.Write("DS -" + XYZIncrement.Text + ",0,0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
@@ -593,22 +591,95 @@ namespace IndustrialRobot.Views
 
         private void UpYButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                if (blockButton == false)
+                {
+                    main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DS 0," + XYZIncrement.Text + ",0" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockButton = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void DownYButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                if (blockButton == false)
+                {
+                    main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DS 0,-" + XYZIncrement.Text + ",0" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockButton = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void UpZButton_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                if (blockButton == false)
+                {
+                    main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DS 0,0," + XYZIncrement.Text + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockButton = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
 
+        private void DownZButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (blockButton == false)
+                {
+                    main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DS 0,0,-" + XYZIncrement.Text + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockButton = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void UpAButton_Click(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void DownAButton_Click(object sender, RoutedEventArgs e)
@@ -640,19 +711,54 @@ namespace IndustrialRobot.Views
         {
             if (UltraSafeMenuItem.IsChecked == false) UltraSafeMenuItem.IsChecked = true;
             if (SafeMenuItem.IsChecked == true) SafeMenuItem.IsChecked = false;
-            if (LudicrousMenuItem.IsChecked == true) LudicrousMenuItem.IsChecked = false;          
+            if (LudicrousMenuItem.IsChecked == true) LudicrousMenuItem.IsChecked = false;
+            UltraSafeModeRadioButton.IsChecked = true;
+            LinearSpeedSlider.Value = 1;
+            LinearSpeedSlider.IsEnabled = false;
         }
 
         private void SafeMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (UltraSafeMenuItem.IsChecked == true) UltraSafeMenuItem.IsChecked = false;
             if (SafeMenuItem.IsChecked == false) SafeMenuItem.IsChecked = true;
-            if (LudicrousMenuItem.IsChecked == true) LudicrousMenuItem.IsChecked = false;            
+            if (LudicrousMenuItem.IsChecked == true) LudicrousMenuItem.IsChecked = false;
+            SafeModeRadioButton.IsChecked = true;
         }
 
         private void LudicrousMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            
+            LudicrousModeRadioButton.IsChecked = true;
+        }
+
+        private void UltraSafeMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+        
+        }
+
+        private void SafeMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            LinearSpeedSlider.IsEnabled = true;
+            LinearSpeedSlider.Value = 1;
+            LinearSpeedSlider.Maximum = 20;
+        }
+
+        private void LudicrousMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            LinearSpeedSlider.IsEnabled = true;
+            LinearSpeedSlider.Maximum = 650;
+        }
+
+        private void UltraSafeModeRadioButton_Click(object sender, RoutedEventArgs e)
+        {
+            LinearSpeedSlider.Value = 1;
+            LinearSpeedSlider.IsEnabled = false;
+        }
+
+        private void SafeModeRadioButton_Click(object sender, RoutedEventArgs e)
+        {
+            LinearSpeedSlider.IsEnabled = true;
+            LinearSpeedSlider.Value = 1;
+            LinearSpeedSlider.Maximum = 20;
         }
     }
 }
