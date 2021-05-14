@@ -23,15 +23,17 @@ namespace IndustrialRobot.Views
     public partial class ControlPanelView : Window
     {
         private static Timer aTimer;
-        private bool blockButton = false;
-        string response = string.Empty;
+        private static Timer bTimer;
+        private bool blockAllButtons = false;
+        private bool blockDownload = false;
+        public string response = string.Empty;
         delegate void PrintToResponseTextBox(string text);
         private MainView main;
         private Thickness myThickness;
         UInt16 positionNumber = 1;
         string[] positionArray = new string[999];
+        public Dictionary<ushort, string> positionDictionary = new Dictionary<ushort, string>();
         //List<string> positionList = new List<string>();
-        delegate void CheckModesRadioButtons();
 
         public ControlPanelView(MainView mainView)
         {
@@ -42,355 +44,34 @@ namespace IndustrialRobot.Views
             Uri iconUri = new Uri("rve2.png", UriKind.RelativeOrAbsolute);
             this.Icon = BitmapFrame.Create(iconUri);
             PositionNumberTextBox.Text = positionNumber.ToString();
-            //for (int i = 1; i < 1000; i++) positionList.Insert(i, "");
-            //for (int i = 1; i < 1000; i++) positionNumberList.Insert(i, $"Pos. {i}:");
             UltraSafeMenuItem.Click += new RoutedEventHandler(UltraSafeModeRadioButton_Checked);  
             SafeMenuItem.Click += new RoutedEventHandler(SafeModeRadioButton_Checked);
-            //LudicrousMenuItem.Click += new RoutedEventHandler(LudicrousModeRadioButton_Checked);
-            LudicrousMenuItem.Click += new RoutedEventHandler(LudicrousModeRadioButton_Click);
-        }
-
-        private void IncomingDataEvent(object sender, SerialDataReceivedEventArgs e)
-        {
-            response = main.serialPort.ReadExisting();
-            if (response != string.Empty) Dispatcher.BeginInvoke(new PrintToResponseTextBox(TextToResponse), new object[] { response });        
-        }
-
-        private void TextToResponse(string text)
-        {
-            ResponseTextBox.Text += text;
-        }
-
-        private void SendCommandButton_Click(object sender, RoutedEventArgs e)
-        {
-            ResponseTextBox.Clear();
-            try
-            {             
-                main.serialPort.Write("SP " + SpeedSlider.Value.ToString() + "\r");
-                main.serialPort.Write(CommandTextBox.Text.ToString() + "\r");
-                CommandTextBox.Clear();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            LudicrousMenuItem.Click += new RoutedEventHandler(LudicrousModeRadioButton_Click);            
         }
 
         private void UnlockButtonEvent(object sender, ElapsedEventArgs e)
         {
-            blockButton = false;
+            blockAllButtons = false;
         }
 
-        private void LeftWaistButton_Click(object sender, RoutedEventArgs e)
+        private void UnlockDownloadEvent(object sender, ElapsedEventArgs e)
         {
-            try
-            {
-                if (blockButton == false)
-                {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 1,-" + TurningAngleSlider.Value.ToString() + "\r");
-                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
-                    {
-                        blockButton = true;
-                        aTimer.Start();
-                        aTimer.Elapsed += UnlockButtonEvent;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            blockDownload = false;
         }
-        
-        private void RightWaistButton_Click(object sender, RoutedEventArgs e)
+
+        private void ChangeTheme(object sender, RoutedEventArgs e)
         {
-            try
+            switch (int.Parse(((MenuItem)sender).Uid))
             {
-                if (blockButton == false)
-                {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 1," + TurningAngleSlider.Value.ToString() + "\r");
-                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
-                    {
-                        blockButton = true;
-                        aTimer.Start();
-                        aTimer.Elapsed += UnlockButtonEvent;
-                    }
-                }
+                case 0: ThemesController.SetTheme(ThemesController.ThemeTypes.Light); break;
+                case 1: ThemesController.SetTheme(ThemesController.ThemeTypes.ColourfulLight); break;
+                case 2: ThemesController.SetTheme(ThemesController.ThemeTypes.Dark); break;
+                case 3: ThemesController.SetTheme(ThemesController.ThemeTypes.ColourfulDark); break;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            e.Handled = true;
         }
 
-        private void LeftShoulderButton_Click(object sender, RoutedEventArgs e)
-        {           
-            try
-            {
-                if (blockButton == false)
-                {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 2,-" + TurningAngleSlider.Value.ToString() + "\r");
-                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
-                    {
-                        blockButton = true;
-                        aTimer.Start();
-                        aTimer.Elapsed += UnlockButtonEvent;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void RightShoulderButton_Click(object sender, RoutedEventArgs e)
-        {          
-            try
-            {
-                if (blockButton == false)
-                {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 2," + TurningAngleSlider.Value.ToString() + "\r");
-                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
-                    {
-                        blockButton = true;
-                        aTimer.Start();
-                        aTimer.Elapsed += UnlockButtonEvent;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void LeftElbowButton_Click(object sender, RoutedEventArgs e)
-        {         
-            try
-            {
-                if (blockButton == false)
-                {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 3,-" + TurningAngleSlider.Value.ToString() + "\r");
-                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
-                    {
-                        blockButton = true;
-                        aTimer.Start();
-                        aTimer.Elapsed += UnlockButtonEvent;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void RightElbowButton_Click(object sender, RoutedEventArgs e)
-        {          
-            try
-            {
-                if (blockButton == false)
-                {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 3," + TurningAngleSlider.Value.ToString() + "\r");
-                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
-                    {
-                        blockButton = true;
-                        aTimer.Start();
-                        aTimer.Elapsed += UnlockButtonEvent;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void LeftTwistButton_Click(object sender, RoutedEventArgs e)
-        {           
-            try
-            {
-                if (blockButton == false)
-                {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 4,-" + TurningAngleSlider.Value.ToString() + "\r");
-                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
-                    {
-                        blockButton = true;
-                        aTimer.Start();
-                        aTimer.Elapsed += UnlockButtonEvent;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void RightTwistButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (blockButton == false)
-                {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 4," + TurningAngleSlider.Value.ToString() + "\r");
-                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
-                    {
-                        blockButton = true;
-                        aTimer.Start();
-                        aTimer.Elapsed += UnlockButtonEvent;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void LeftPitchButton_Click(object sender, RoutedEventArgs e)
-        {         
-            try
-            {
-                if (blockButton == false)
-                {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 5,-" + TurningAngleSlider.Value.ToString() + "\r");
-                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
-                    {
-                        blockButton = true;
-                        aTimer.Start();
-                        aTimer.Elapsed += UnlockButtonEvent;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void RightPitchButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (blockButton == false)
-                {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 5," + TurningAngleSlider.Value.ToString() + "\r");
-                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
-                    {
-                        blockButton = true;
-                        aTimer.Start();
-                        aTimer.Elapsed += UnlockButtonEvent;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void LeftRollButton_Click(object sender, RoutedEventArgs e)
-        {         
-            try
-            {
-                if (blockButton == false)
-                {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 6,-" + TurningAngleSlider.Value.ToString() + "\r");
-                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
-                    {
-                        blockButton = true;
-                        aTimer.Start();
-                        aTimer.Elapsed += UnlockButtonEvent;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void RightRollButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (blockButton == false)
-                {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 6," + TurningAngleSlider.Value.ToString() + "\r");
-                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
-                    {
-                        blockButton = true;
-                        aTimer.Start();
-                        aTimer.Elapsed += UnlockButtonEvent;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            main.Show();
-        }
-
-        private void OpenGripButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (blockButton == false)
-                {
-                    main.serialPort.Write("GO" + "\r");
-                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
-                    {
-                        blockButton = true;
-                        aTimer.Start();
-                        aTimer.Elapsed += UnlockButtonEvent;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void CloseGripButton_Click(object sender, RoutedEventArgs e)
-        {           
-            try
-            {
-                if (blockButton == false)
-                {
-                    main.serialPort.Write("GC" + "\r");
-                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
-                    {
-                        blockButton = true;
-                        aTimer.Start();
-                        aTimer.Elapsed += UnlockButtonEvent;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
+        #region Safety Modes:
 
         private void UltraSafeModeRadioButton_Checked(object sender, RoutedEventArgs e)
         {
@@ -431,12 +112,12 @@ namespace IndustrialRobot.Views
             myThickness.Left = 0;
             myThickness.Right = 89;
             myThickness.Top = 0;
-            TurningAngleSlider.Margin = myThickness;                   
+            TurningAngleSlider.Margin = myThickness;
         }
 
         private void LudicrousModeRadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            blockButton = false;
+            blockAllButtons = false;
             aTimer.Enabled = false;
             JogSpeedSlider.IsEnabled = true;
             TurningAngleSlider.IsEnabled = true;
@@ -452,7 +133,7 @@ namespace IndustrialRobot.Views
             myThickness.Left = 0;
             myThickness.Right = 31;
             myThickness.Top = 0;
-            TurningAngleSlider.Margin = myThickness;                  
+            TurningAngleSlider.Margin = myThickness;
         }
 
         private void LudicrousModeRadioButton_Click(object sender, RoutedEventArgs e)
@@ -466,7 +147,7 @@ namespace IndustrialRobot.Views
                 LinearSpeedSlider.IsEnabled = true;
                 LinearSpeedSlider.Maximum = 650;
             }
-                
+
             else
             {
                 UltraSafeModeRadioButton.IsChecked = true;
@@ -475,28 +156,138 @@ namespace IndustrialRobot.Views
                 if (LudicrousMenuItem.IsChecked == true) LudicrousMenuItem.IsChecked = false;
                 LinearSpeedSlider.Value = 1;
                 LinearSpeedSlider.IsEnabled = false;
-            }                      
-        }
-        private void ChangeTheme(object sender, RoutedEventArgs e)
-        {
-            switch (int.Parse(((MenuItem)sender).Uid))
-            {
-                case 0: ThemesController.SetTheme(ThemesController.ThemeTypes.Light); break;
-                case 1: ThemesController.SetTheme(ThemesController.ThemeTypes.ColourfulLight); break;
-                case 2: ThemesController.SetTheme(ThemesController.ThemeTypes.Dark); break;
-                case 3: ThemesController.SetTheme(ThemesController.ThemeTypes.ColourfulDark); break;
             }
-            e.Handled = true;
         }
 
-        private void UpPositionNumberButton_Click(object sender, RoutedEventArgs e)
+        private void UltraSafeMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (UltraSafeMenuItem.IsChecked == false) UltraSafeMenuItem.IsChecked = true;
+            if (SafeMenuItem.IsChecked == true) SafeMenuItem.IsChecked = false;
+            if (LudicrousMenuItem.IsChecked == true) LudicrousMenuItem.IsChecked = false;
+            UltraSafeModeRadioButton.IsChecked = true;
+            LinearSpeedSlider.Value = 1;
+            LinearSpeedSlider.IsEnabled = false;
+        }
+
+        private void SafeMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (UltraSafeMenuItem.IsChecked == true) UltraSafeMenuItem.IsChecked = false;
+            if (SafeMenuItem.IsChecked == false) SafeMenuItem.IsChecked = true;
+            if (LudicrousMenuItem.IsChecked == true) LudicrousMenuItem.IsChecked = false;
+            SafeModeRadioButton.IsChecked = true;
+        }
+
+        private void LudicrousMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            LudicrousModeRadioButton.IsChecked = true;
+        }
+
+        private void UltraSafeMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SafeMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            LinearSpeedSlider.IsEnabled = true;
+            LinearSpeedSlider.Value = 1;
+            LinearSpeedSlider.Maximum = 20;
+        }
+
+        private void LudicrousMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            LinearSpeedSlider.IsEnabled = true;
+            LinearSpeedSlider.Maximum = 650;
+        }
+
+        private void UltraSafeModeRadioButton_Click(object sender, RoutedEventArgs e)
+        {
+            LinearSpeedSlider.Value = 1;
+            LinearSpeedSlider.IsEnabled = false;
+        }
+
+        private void SafeModeRadioButton_Click(object sender, RoutedEventArgs e)
+        {
+            LinearSpeedSlider.IsEnabled = true;
+            LinearSpeedSlider.Value = 1;
+            LinearSpeedSlider.Maximum = 20;
+        }
+
+        #endregion:
+
+        #region Command Tool:
+
+        private void IncomingDataEvent(object sender, SerialDataReceivedEventArgs e)
+        {
+            response = main.serialPort.ReadExisting();
+            if (response != string.Empty) Dispatcher.BeginInvoke(new PrintToResponseTextBox(TextToResponse), new object[] { response });        
+        }
+
+        private void TextToResponse(string text)
+        {
+            ResponseTextBox.Text += text;
+            
+            //LogRichTextBox.Selection.Text = DateTime.Now.ToString("HH:mm:ss") + "   " + text + "\n";
+            //LogRichTextBox.ScrollToEnd();
+        }
+
+        private void SendCommandButton_Click(object sender, RoutedEventArgs e)
+        {
+            ResponseTextBox.Clear();
+            try
+            {             
+                main.serialPort.Write("SP " + SpeedSlider.Value.ToString() + "\r");
+                main.serialPort.Write(CommandTextBox.Text.ToString() + "\r");
+                CommandTextBox.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
+
+        #endregion
+
+        #region Jog Joints Buttons:
+
+        private void LeftWaistButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (positionNumber < 1000)
+                if (blockAllButtons == false)
                 {
-                    positionNumber = (ushort)(Convert.ToUInt16(PositionNumberTextBox.Text) + 1);
-                    PositionNumberTextBox.Text = positionNumber.ToString();
+                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DJ 1,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        
+        private void RightWaistButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DJ 1," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
                 }
             }
             catch (Exception ex)
@@ -505,14 +296,20 @@ namespace IndustrialRobot.Views
             }
         }
 
-        private void DownPositionNumberButton_Click(object sender, RoutedEventArgs e)
-        {
+        private void LeftShoulderButton_Click(object sender, RoutedEventArgs e)
+        {           
             try
             {
-                if (positionNumber > 1)
+                if (blockAllButtons == false)
                 {
-                    positionNumber = (ushort)(Convert.ToUInt16(PositionNumberTextBox.Text) - 1);
-                    PositionNumberTextBox.Text = positionNumber.ToString();
+                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DJ 2,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
                 }
             }
             catch (Exception ex)
@@ -521,41 +318,269 @@ namespace IndustrialRobot.Views
             }
         }
 
-        private void SavePositionButton_Click(object sender, RoutedEventArgs e)
-        {
+        private void RightShoulderButton_Click(object sender, RoutedEventArgs e)
+        {          
             try
             {
-                if (blockButton == false)
+                if (blockAllButtons == false)
                 {
-                    if (Convert.ToUInt16(PositionNumberTextBox.Text) > 0 && Convert.ToUInt16(PositionNumberTextBox.Text) < 1000)
+                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DJ 2," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
-                        main.serialPort.Write("HE " + PositionNumberTextBox.Text + "\r");
-                        //positionList.Insert(Convert.ToUInt16(PositionNumberTextBox.Text), ResponseTextBox.Text);
-                        positionArray[Convert.ToUInt16(PositionNumberTextBox.Text) - 1] = ResponseTextBox.Text;
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
                     }
-                    else
-                    {
-                        MessageBox.Show("Position number must be at range: 0 < number < 1000", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }         
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
+
+        private void LeftElbowButton_Click(object sender, RoutedEventArgs e)
+        {         
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DJ 3,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void RightElbowButton_Click(object sender, RoutedEventArgs e)
+        {          
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DJ 3," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void LeftTwistButton_Click(object sender, RoutedEventArgs e)
+        {           
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DJ 4,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void RightTwistButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DJ 4," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void LeftPitchButton_Click(object sender, RoutedEventArgs e)
+        {         
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DJ 5,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void RightPitchButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DJ 5," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void LeftRollButton_Click(object sender, RoutedEventArgs e)
+        {         
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DJ 6,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void RightRollButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DJ 6," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        #endregion
+        #region Other Jog Joints Buttons:
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            main.Show();
+        }
+
+        private void OpenGripButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    main.serialPort.Write("GO" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void CloseGripButton_Click(object sender, RoutedEventArgs e)
+        {           
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    main.serialPort.Write("GC" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        #endregion
+        
+        #region Jog XYZ Buttons:
 
         private void UpXButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (blockButton == false)
+                if (blockAllButtons == false)
                 {
                     main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
                     main.serialPort.Write("DS " + XYZIncrement.Text + ",0,0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
-                        blockButton = true;
+                        blockAllButtons = true;
                         aTimer.Start();
                         aTimer.Elapsed += UnlockButtonEvent;
                     }
@@ -571,13 +596,13 @@ namespace IndustrialRobot.Views
         {
             try
             {
-                if (blockButton == false)
+                if (blockAllButtons == false)
                 {
                     main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
                     main.serialPort.Write("DS -" + XYZIncrement.Text + ",0,0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
-                        blockButton = true;
+                        blockAllButtons = true;
                         aTimer.Start();
                         aTimer.Elapsed += UnlockButtonEvent;
                     }
@@ -593,13 +618,13 @@ namespace IndustrialRobot.Views
         {
             try
             {
-                if (blockButton == false)
+                if (blockAllButtons == false)
                 {
                     main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
                     main.serialPort.Write("DS 0," + XYZIncrement.Text + ",0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
-                        blockButton = true;
+                        blockAllButtons = true;
                         aTimer.Start();
                         aTimer.Elapsed += UnlockButtonEvent;
                     }
@@ -615,13 +640,13 @@ namespace IndustrialRobot.Views
         {
             try
             {
-                if (blockButton == false)
+                if (blockAllButtons == false)
                 {
                     main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
                     main.serialPort.Write("DS 0,-" + XYZIncrement.Text + ",0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
-                        blockButton = true;
+                        blockAllButtons = true;
                         aTimer.Start();
                         aTimer.Elapsed += UnlockButtonEvent;
                     }
@@ -637,13 +662,13 @@ namespace IndustrialRobot.Views
         {
             try
             {
-                if (blockButton == false)
+                if (blockAllButtons == false)
                 {
                     main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
                     main.serialPort.Write("DS 0,0," + XYZIncrement.Text + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
-                        blockButton = true;
+                        blockAllButtons = true;
                         aTimer.Start();
                         aTimer.Elapsed += UnlockButtonEvent;
                     }
@@ -659,13 +684,13 @@ namespace IndustrialRobot.Views
         {
             try
             {
-                if (blockButton == false)
+                if (blockAllButtons == false)
                 {
                     main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
                     main.serialPort.Write("DS 0,0,-" + XYZIncrement.Text + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
-                        blockButton = true;
+                        blockAllButtons = true;
                         aTimer.Start();
                         aTimer.Elapsed += UnlockButtonEvent;
                     }
@@ -707,58 +732,102 @@ namespace IndustrialRobot.Views
 
         }
 
-        private void UltraSafeMenuItem_Click(object sender, RoutedEventArgs e)
+        #endregion
+        #region Other Jog XYZ Buttons:
+
+
+
+        #endregion
+
+        #region Positions:
+
+        private void UpPositionNumberButton_Click(object sender, RoutedEventArgs e)
         {
-            if (UltraSafeMenuItem.IsChecked == false) UltraSafeMenuItem.IsChecked = true;
-            if (SafeMenuItem.IsChecked == true) SafeMenuItem.IsChecked = false;
-            if (LudicrousMenuItem.IsChecked == true) LudicrousMenuItem.IsChecked = false;
-            UltraSafeModeRadioButton.IsChecked = true;
-            LinearSpeedSlider.Value = 1;
-            LinearSpeedSlider.IsEnabled = false;
+            try
+            {
+                if (positionNumber < 1000)
+                {
+                    positionNumber = (ushort)(Convert.ToUInt16(PositionNumberTextBox.Text) + 1);
+                    PositionNumberTextBox.Text = positionNumber.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
-        private void SafeMenuItem_Click(object sender, RoutedEventArgs e)
+        private void DownPositionNumberButton_Click(object sender, RoutedEventArgs e)
         {
-            if (UltraSafeMenuItem.IsChecked == true) UltraSafeMenuItem.IsChecked = false;
-            if (SafeMenuItem.IsChecked == false) SafeMenuItem.IsChecked = true;
-            if (LudicrousMenuItem.IsChecked == true) LudicrousMenuItem.IsChecked = false;
-            SafeModeRadioButton.IsChecked = true;
+            try
+            {
+                if (positionNumber > 1)
+                {
+                    positionNumber = (ushort)(Convert.ToUInt16(PositionNumberTextBox.Text) - 1);
+                    PositionNumberTextBox.Text = positionNumber.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
-        private void LudicrousMenuItem_Click(object sender, RoutedEventArgs e)
+        private void SavePositionButton_Click(object sender, RoutedEventArgs e)
         {
-            LudicrousModeRadioButton.IsChecked = true;
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    if (Convert.ToUInt16(PositionNumberTextBox.Text) > 0 && Convert.ToUInt16(PositionNumberTextBox.Text) < 1000)
+                    {
+                        main.serialPort.Write("HE " + PositionNumberTextBox.Text + "\r");
+                        positionDictionary.Remove(Convert.ToUInt16(PositionNumberTextBox.Text));
+                        positionDictionary.Add(Convert.ToUInt16(PositionNumberTextBox.Text), ResponseTextBox.Text);
+                        //PositionsTextBox.Clear();
+                        
+                        //PositionsListBox.Items.IsLiveSorting = true;
+                        //PositionsListBox.Items.Add(PositionNumberTextBox.Text + " " + ResponseTextBox.Text);
+                        //positionArray[Convert.ToUInt16(PositionNumberTextBox.Text) - 1] = ResponseTextBox.Text;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Position number must be at range: 0 < number < 1000", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
-        private void UltraSafeMenuItem_Checked(object sender, RoutedEventArgs e)
+        private void PositionsDownloadButton_Click(object sender, RoutedEventArgs e)
         {
-        
+            try
+            {
+                if (blockDownload == false)
+                {
+                    blockDownload = true;
+                    bTimer = new Timer(10000);                  
+                    for (ushort i = 1; i < 1000; i++)
+                    {
+                        ResponseTextBox.Clear();
+                        main.serialPort.Write("PR " + $"{i}" + "\r");
+                        positionDictionary[i] = response;
+                        response = "";
+                    }
+
+                    bTimer.Start();
+                    bTimer.Elapsed += UnlockDownloadEvent;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }            
         }
 
-        private void SafeMenuItem_Checked(object sender, RoutedEventArgs e)
-        {
-            LinearSpeedSlider.IsEnabled = true;
-            LinearSpeedSlider.Value = 1;
-            LinearSpeedSlider.Maximum = 20;
-        }
-
-        private void LudicrousMenuItem_Checked(object sender, RoutedEventArgs e)
-        {
-            LinearSpeedSlider.IsEnabled = true;
-            LinearSpeedSlider.Maximum = 650;
-        }
-
-        private void UltraSafeModeRadioButton_Click(object sender, RoutedEventArgs e)
-        {
-            LinearSpeedSlider.Value = 1;
-            LinearSpeedSlider.IsEnabled = false;
-        }
-
-        private void SafeModeRadioButton_Click(object sender, RoutedEventArgs e)
-        {
-            LinearSpeedSlider.IsEnabled = true;
-            LinearSpeedSlider.Value = 1;
-            LinearSpeedSlider.Maximum = 20;
-        }
+        #endregion
     }
 }

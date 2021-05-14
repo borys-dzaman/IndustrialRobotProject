@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IndustrialRobot.Views"
         mc:Ignorable="d"
-        Title="Control Panel" Height="498" Width="564" FontSize="20" FontFamily="Times New Roman" Closed="Window_Closed" Style="{DynamicResource CustomWindowStyle}">
+        Title="Control Panel" Height="513" Width="600" FontSize="20" FontFamily="Times New Roman" Closed="Window_Closed" Style="{DynamicResource CustomWindowStyle}">
     <Window.Resources>
         <DropShadowBitmapEffect x:Key="NormalShadow" ShadowDepth="2" Softness="0.2" Opacity="0.64"/>
     </Window.Resources>
@@ -74,6 +74,8 @@
                     <Label x:Name="SpeedValue" Content="{Binding Value, ElementName=SpeedSlider}" Grid.Row="1" Grid.Column="2"/>
                     <Label Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2">Robot response:</Label>
                     <TextBox x:Name="ResponseTextBox" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="4" Margin="0,5,0.5,5" IsReadOnly="True"/>
+                    <Label Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2">Logs:</Label>
+                    <RichTextBox x:Name="LogRichTextBox" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="4" Margin="0,0,0.5,0" IsReadOnly="True"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Jog Joints">
@@ -168,7 +170,7 @@
 
             </TabItem>
             <TabItem Header="Jog XYZ">
-                <Grid>
+                <Grid Margin="20,10,0,0">
                     <GroupBox Header="Linear speed" Width="200" Height="89" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <StackPanel>
                             <Grid>
@@ -310,9 +312,12 @@
             </TabItem>
 
             <TabItem Header="Positions">
-                <ListBox x:Name="PositionsListBox" Margin="0,0,0,0"/>
+                <Grid>
+                    <TextBox x:Name="PositionsTextBox" Margin="0,60,0,0"/>
+                    <Button x:Name="PositionsDownloadButton" Content="Positions Download" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="162" Click="PositionsDownloadButton_Click"/>
+                </Grid>
+                <!--<TextBox x:Name="LogTextBox" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="4" Margin="0,5,0.5,5" IsReadOnly="True"/>-->
             </TabItem>
-
             <TabItem Header="Details">
                 <GroupBox>
                     <Image Margin="132,10" Source="/IndustrialRobot;component/details_rv_e2.png" Stretch="Fill"/>
