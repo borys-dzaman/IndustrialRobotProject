@@ -313,8 +313,12 @@
 
             <TabItem Header="Positions">
                 <Grid>
-                    <TextBox x:Name="PositionsTextBox" Margin="0,60,0,0"/>
-                    <Button x:Name="PositionsDownloadButton" Content="Positions Download" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="162" Click="PositionsDownloadButton_Click"/>
+                    <Button x:Name="PositionDownloadButton" Content="Download position" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="182" Click="PositionDownloadButton_Click"/>
+                    <DataGrid x:Name="PositionDataGrid" HorizontalAlignment="Left" Height="322" Margin="10,54,0,0" VerticalAlignment="Top" Width="564">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Pos.No:" Binding="{Binding Path=positionDictionary}"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </Grid>
                 <!--<TextBox x:Name="LogTextBox" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="4" Margin="0,5,0.5,5" IsReadOnly="True"/>-->
             </TabItem>

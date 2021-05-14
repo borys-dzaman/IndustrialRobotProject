@@ -58,8 +58,6 @@ namespace IndustrialRobot.Views
             {
                 if (serialPort.IsOpen == false)
                 {
-                    //serialPort.PortName = Convert.ToString(PortComboBox.Text);
-
                     SaveSettings();
                     GetSettings();
                 }
@@ -78,7 +76,6 @@ namespace IndustrialRobot.Views
 
         public void SaveSettings()
         {
-            // do dodania obsługa wyjątku gdy nie doda się wszystkich parametrów
             Properties.Settings.Default.Port = (string)PortComboBox.SelectedItem;
             Properties.Settings.Default.Parity = (Parity)Enum.Parse(typeof(Parity), (string)ParityComboBox.SelectedItem);
             Properties.Settings.Default.BaudRate = Convert.ToInt32(BaudRateComboBox.SelectedItem);
@@ -86,10 +83,5 @@ namespace IndustrialRobot.Views
             Properties.Settings.Default.StopBits = (StopBits)Enum.Parse(typeof(StopBits), (string)StopBitsComboBox.SelectedItem);
             Properties.Settings.Default.Save();           
         }
-
-        //private void Window_Loaded(object sender, RoutedEventArgs e)
-        //{
-        //    GetSettings();
-        //}
     }
 }
