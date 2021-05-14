@@ -11,27 +11,36 @@
     </Window.Resources>
     <Grid>
         <Menu>
-            <MenuItem Header="Themes" Height="25">
-                <MenuItem Header="Avaliable Themes Below" Template="{DynamicResource SingleDropDownMenuItem}"/>
-                <MenuItem Header="Light" Template="{DynamicResource SingleDropDownMenuItem}" Click="ChangeTheme" Uid="0">
-                    <MenuItem.Icon>
-                        <Rectangle Stroke="#FF848484" Fill="#FFE8E8E8" StrokeThickness="2" StrokeLineJoin="Round" BitmapEffect="{StaticResource NormalShadow}"/>
-                    </MenuItem.Icon>
+            <MenuItem Header="Settings" Height="25">
+                <MenuItem Header="Themes" Template="{DynamicResource DropDownMenuItemStyle}">
+                    <MenuItem Header="Light" Template="{DynamicResource SingleDropDownMenuItem}" Click="ChangeTheme" Uid="0">
+                        <MenuItem.Icon>
+                            <Rectangle Stroke="#FF848484" Fill="#FFE8E8E8" StrokeThickness="2" StrokeLineJoin="Round" BitmapEffect="{StaticResource NormalShadow}"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Colourful Light" Template="{DynamicResource SingleDropDownMenuItem}" Click="ChangeTheme" Uid="1">
+                        <MenuItem.Icon>
+                            <Rectangle Stroke="#FF2C7FF5" Fill="#FFE8E8E8" StrokeThickness="2" StrokeLineJoin="Round" BitmapEffect="{StaticResource NormalShadow}"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Dark" Template="{DynamicResource SingleDropDownMenuItem}" Click="ChangeTheme" Uid="2">
+                        <MenuItem.Icon>
+                            <Rectangle Stroke="#FF404040" Fill="#FF1B1B1B" StrokeThickness="2" StrokeLineJoin="Round" BitmapEffect="{StaticResource NormalShadow}"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Colourful Dark" Template="{DynamicResource SingleDropDownMenuItem}" Click="ChangeTheme" Uid="3">
+                        <MenuItem.Icon>
+                            <Rectangle Stroke="#FF2C7FF5" Fill="#FF1B1B1B" StrokeThickness="2" StrokeLineJoin="Round" BitmapEffect="{StaticResource NormalShadow}"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </MenuItem>
-                <MenuItem Header="Colourful Light" Template="{DynamicResource SingleDropDownMenuItem}" Click="ChangeTheme" Uid="1">
-                    <MenuItem.Icon>
-                        <Rectangle Stroke="#FF2C7FF5" Fill="#FFE8E8E8" StrokeThickness="2" StrokeLineJoin="Round" BitmapEffect="{StaticResource NormalShadow}"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Dark" Template="{DynamicResource SingleDropDownMenuItem}" Click="ChangeTheme" Uid="2">
-                    <MenuItem.Icon>
-                        <Rectangle Stroke="#FF404040" Fill="#FF1B1B1B" StrokeThickness="2" StrokeLineJoin="Round" BitmapEffect="{StaticResource NormalShadow}"/>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Colourful Dark" Template="{DynamicResource SingleDropDownMenuItem}" Click="ChangeTheme" Uid="3">
-                    <MenuItem.Icon>
-                        <Rectangle Stroke="#FF2C7FF5" Fill="#FF1B1B1B" StrokeThickness="2" StrokeLineJoin="Round" BitmapEffect="{StaticResource NormalShadow}"/>
-                    </MenuItem.Icon>
+                <MenuItem Header="Safety Modes" Template="{DynamicResource DropDownMenuItemStyle}">
+                    <MenuItem x:Name="UltraSafeMenuItem" Header="Ultra Safe Mode" IsChecked="True" Margin="10,0,0,0" IsCheckable="True" Click="UltraSafeMenuItem_Click">
+                    </MenuItem>
+                    <MenuItem x:Name="SafeMenuItem" Header="Safe Mode" IsCheckable="True" Margin="10,0,0,0" Click="SafeMenuItem_Click">
+                    </MenuItem>
+                    <MenuItem x:Name="LudicrousMenuItem" Header="Ludicrous Mode" IsCheckable="True" Margin="10,0,0,0" Click="LudicrousMenuItem_Click">
+                    </MenuItem>
                 </MenuItem>
             </MenuItem>
         </Menu>
@@ -58,8 +67,8 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="20" />
                     </Grid.RowDefinitions>
-                    <TextBox x:Name="CommandTextBox" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,5,0,5"></TextBox>
-                    <Button x:Name="SendCommandButton" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,5,0,5" Content="Send Command" Click="SendCommandButton_Click"/>
+                    <TextBox x:Name="CommandTextBox" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" Margin="0,5,211.5,5"></TextBox>
+                    <Button x:Name="SendCommandButton" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="4" Margin="0,5,212.5,5" Content="Send Command" Click="SendCommandButton_Click"/>
                     <Label Grid.Row="1" Grid.Column="1">Speed:</Label>
                     <Slider x:Name="SpeedSlider" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Minimum="1" Maximum="10" Value="1" SmallChange="1" IsSnapToTickEnabled="True"/>
                     <Label x:Name="SpeedValue" Content="{Binding Value, ElementName=SpeedSlider}" Grid.Row="1" Grid.Column="2"/>
@@ -160,17 +169,26 @@
             </TabItem>
             <TabItem Header="Jog XYZ">
                 <Grid>
-                    <GroupBox Header="Jog speed" Width="200" Height="89" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <GroupBox Header="Linear speed" Width="200" Height="89" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <StackPanel>
-                            <Slider></Slider>
-                            <Label>first element</Label>
+                            <Grid>
+                                <Slider x:Name="LinearSpeedSlider" Minimum="0.01" SmallChange="0.01" Margin="0,0,0,35" Value="{Binding Text, ElementName=LinearSpeedTextBox}" TickFrequency="0.01"></Slider>
+                                <TextBox x:Name="LinearSpeedTextBox" Margin="0,25,93,10"></TextBox>
+                                <Label Margin="100,22,0,0">mm/s</Label>
+                            </Grid>
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox Header="Jog increment" Width="200" Height="130" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,94,0,147">
+                    <GroupBox Header="Jog increment" Width="200" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,94,0,135">
                         <StackPanel>
-                            <Slider></Slider>
-                            <Label>first element</Label>
-                            <Label>second element</Label>
+                            <Grid>
+                                <Slider x:Name="JogIncrementSlider" Margin="0,0,0,161" Maximum="100" Value="{Binding Text, ElementName=XYZIncrement}" SmallChange="0.01"/>
+                                <Label Margin="0,30">X,Y,Z:</Label>
+                                <TextBox x:Name="XYZIncrement" Margin="70,30,47,128"></TextBox>
+                                <Label Margin="146,30,-2,118" RenderTransformOrigin="1.948,-0.303">mm</Label>
+                                <Label Margin="0,60">A,B,C:</Label>
+                                <TextBox x:Name="ABCIncrement" Margin="70,65,47,93"></TextBox>
+                                <Label Margin="146,60,1,93">deg</Label>
+                            </Grid>
                         </StackPanel>
                     </GroupBox>
                     <GroupBox Header="Position list" Width="200" Height="130" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,40,0,0">

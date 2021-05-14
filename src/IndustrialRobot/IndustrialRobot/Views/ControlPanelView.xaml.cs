@@ -30,8 +30,8 @@ namespace IndustrialRobot.Views
         private Thickness myThickness;
         UInt16 positionNumber = 1;
         string[] positionArray = new string[999];
-        List<string> positionList = new List<string>();
-        List<string> positionNumberList = new List<string>();
+        //List<string> positionList = new List<string>();
+        delegate void CheckModesRadioButtons();
 
         public ControlPanelView(MainView mainView)
         {
@@ -42,8 +42,12 @@ namespace IndustrialRobot.Views
             Uri iconUri = new Uri("rve2.png", UriKind.RelativeOrAbsolute);
             this.Icon = BitmapFrame.Create(iconUri);
             PositionNumberTextBox.Text = positionNumber.ToString();
-            for (int i = 1; i < 1000; i++) positionList.Insert(i, "");
-            for (int i = 1; i < 1000; i++) positionNumberList.Insert(i, $"Pos. {i}:");
+            //for (int i = 1; i < 1000; i++) positionList.Insert(i, "");
+            //for (int i = 1; i < 1000; i++) positionNumberList.Insert(i, $"Pos. {i}:");
+            UltraSafeMenuItem.Click += new RoutedEventHandler(UltraSafeModeRadioButton_Checked);  
+            SafeMenuItem.Click += new RoutedEventHandler(SafeModeRadioButton_Checked);
+            LudicrousMenuItem.Click += new RoutedEventHandler(LudicrousModeRadioButton_Checked);
+            LudicrousMenuItem.Click += new RoutedEventHandler(LudicrousModeRadioButton_Click);
         }
 
         private void IncomingDataEvent(object sender, SerialDataReceivedEventArgs e)
@@ -396,6 +400,9 @@ namespace IndustrialRobot.Views
             JogSpeedSlider.IsEnabled = false;
             TurningAngleSlider.IsEnabled = false;
             JogSpeedSlider.Maximum = 1;
+            //LinearSpeedSlider.Value = 1;
+            //LinearSpeedSlider.IsEnabled = false;
+            //LinearSpeedSlider.Maximum = 1;
             myThickness = new Thickness();
             myThickness.Bottom = 28;
             myThickness.Left = 0;
@@ -416,6 +423,8 @@ namespace IndustrialRobot.Views
             JogSpeedSlider.IsEnabled = true;
             TurningAngleSlider.IsEnabled = true;
             JogSpeedSlider.Maximum = 10;
+            //LinearSpeedSlider.IsEnabled = true;
+            //LinearSpeedSlider.Maximum = 20;
             myThickness = new Thickness();
             myThickness.Bottom = 28;
             myThickness.Left = 0;
@@ -427,7 +436,7 @@ namespace IndustrialRobot.Views
             myThickness.Left = 0;
             myThickness.Right = 89;
             myThickness.Top = 0;
-            TurningAngleSlider.Margin = myThickness;
+            TurningAngleSlider.Margin = myThickness;                   
         }
 
         private void LudicrousModeRadioButton_Checked(object sender, RoutedEventArgs e)
@@ -437,6 +446,8 @@ namespace IndustrialRobot.Views
             JogSpeedSlider.IsEnabled = true;
             TurningAngleSlider.IsEnabled = true;
             JogSpeedSlider.Maximum = 30;
+            //LinearSpeedSlider.IsEnabled = true;
+            //LinearSpeedSlider.Maximum = 650;
             myThickness = new Thickness();
             myThickness.Bottom = 28;
             myThickness.Left = 0;
@@ -448,17 +459,24 @@ namespace IndustrialRobot.Views
             myThickness.Left = 0;
             myThickness.Right = 31;
             myThickness.Top = 0;
-            TurningAngleSlider.Margin = myThickness;
+            TurningAngleSlider.Margin = myThickness;                  
         }
 
         private void LudicrousModeRadioButton_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Are you sure you want to enable ludicrous mode?\n(you will be able to send an unlimited amount of commands)\n(you will also get access to forbidden speed)", "Attention!",
-                MessageBoxButton.YesNoCancel, MessageBoxImage.Question) == MessageBoxResult.Yes) LudicrousModeRadioButton.IsChecked = true;
+                MessageBoxButton.YesNoCancel, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                if (UltraSafeMenuItem.IsChecked == true) UltraSafeMenuItem.IsChecked = false;
+                if (SafeMenuItem.IsChecked == true) SafeMenuItem.IsChecked = false;
+                if (LudicrousMenuItem.IsChecked == false) LudicrousMenuItem.IsChecked = true;
+            }
+                
             else
             {
-                LudicrousModeRadioButton.IsChecked = false;
-                UltraSafeModeRadioButton.IsChecked = true;
+                if (UltraSafeMenuItem.IsChecked == false) UltraSafeMenuItem.IsChecked = true;
+                if (SafeMenuItem.IsChecked == true) SafeMenuItem.IsChecked = false;
+                if (LudicrousMenuItem.IsChecked == true) LudicrousMenuItem.IsChecked = false;
             }                      
         }
         private void ChangeTheme(object sender, RoutedEventArgs e)
@@ -509,16 +527,19 @@ namespace IndustrialRobot.Views
         {
             try
             {
-                if (Convert.ToUInt16(PositionNumberTextBox.Text) > 0 && Convert.ToUInt16(PositionNumberTextBox.Text) < 1000)
+                if (blockButton == false)
                 {
-                    main.serialPort.Write("HE " + PositionNumberTextBox.Text + "\r");
-                    positionList.Insert(Convert.ToUInt16(PositionNumberTextBox.Text), ResponseTextBox.Text);
-                    //positionArray[Convert.ToUInt16(PositionNumberTextBox.Text) - 1] = ResponseTextBox.Text;
-                }
-                else
-                {
-                    MessageBox.Show("Position number must be at range: 0 < number < 1000", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                    if (Convert.ToUInt16(PositionNumberTextBox.Text) > 0 && Convert.ToUInt16(PositionNumberTextBox.Text) < 1000)
+                    {
+                        main.serialPort.Write("HE " + PositionNumberTextBox.Text + "\r");
+                        //positionList.Insert(Convert.ToUInt16(PositionNumberTextBox.Text), ResponseTextBox.Text);
+                        positionArray[Convert.ToUInt16(PositionNumberTextBox.Text) - 1] = ResponseTextBox.Text;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Position number must be at range: 0 < number < 1000", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }         
             }
             catch (Exception ex)
             {
@@ -528,12 +549,46 @@ namespace IndustrialRobot.Views
 
         private void UpXButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                if (blockButton == false)
+                {
+                    main.serialPort.Write("SD " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DS " + XYZIncrement.Text + ",0,0" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockButton = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void DownXButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                if (blockButton == false)
+                {
+                    main.serialPort.Write("SD " + JogSpeedSlider.Value.ToString() + "\r");
+                    main.serialPort.Write("DS -" + XYZIncrement.Text + ",0,0" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockButton = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void UpYButton_Click(object sender, RoutedEventArgs e)
@@ -579,6 +634,25 @@ namespace IndustrialRobot.Views
         private void LeftCButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void UltraSafeMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (UltraSafeMenuItem.IsChecked == false) UltraSafeMenuItem.IsChecked = true;
+            if (SafeMenuItem.IsChecked == true) SafeMenuItem.IsChecked = false;
+            if (LudicrousMenuItem.IsChecked == true) LudicrousMenuItem.IsChecked = false;          
+        }
+
+        private void SafeMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (UltraSafeMenuItem.IsChecked == true) UltraSafeMenuItem.IsChecked = false;
+            if (SafeMenuItem.IsChecked == false) SafeMenuItem.IsChecked = true;
+            if (LudicrousMenuItem.IsChecked == true) LudicrousMenuItem.IsChecked = false;            
+        }
+
+        private void LudicrousMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }
