@@ -314,9 +314,10 @@
             <TabItem Header="Positions">
                 <Grid>
                     <Button x:Name="PositionDownloadButton" Content="Download position" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="182" Click="PositionDownloadButton_Click"/>
-                    <DataGrid x:Name="PositionDataGrid" HorizontalAlignment="Left" Height="322" Margin="10,54,0,0" VerticalAlignment="Top" Width="564">
+                    <DataGrid x:Name="PositionDataGrid" HorizontalAlignment="Left" Height="322" Margin="10,54,0,0" VerticalAlignment="Top" Width="564" AutoGenerateColumns="False">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Pos.No:" Binding="{Binding Path=positionDictionary}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Pos.No:" Width="50"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Coordinates:" Width="*"></DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

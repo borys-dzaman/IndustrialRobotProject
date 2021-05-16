@@ -3,9 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:IndustrialRobot.Views"
+        xmlns:viewmodels="clr-namespace:IndustrialRobot.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         mc:Ignorable="d"
-        Title="Start panel" Height="260" Width="220" FontSize="20" FontFamily="Times New Roman" Style="{DynamicResource CustomWindowStyle}">
+        x:Name="StartPanel"
+        Title="Start panel" 
+        Height="260" 
+        Width="220"
+        FontSize="20" 
+        FontFamily="Times New Roman" 
+        Style="{DynamicResource CustomWindowStyle}">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30" />
@@ -23,8 +29,17 @@
             
             <RowDefinition Height="30" />
         </Grid.RowDefinitions>
-        <Button x:Name="StartButton" Grid.Row="1" Grid.Column="1" Content="Start" Width="160" Height="40" Margin="0,0,0,20" Click="StartButton_Click"/>
-        <Button x:Name="SettingsButton" Grid.Row="2" Grid.Column="1" Content="Settings" Width="160" Height="40" Margin="0,0,0,20" Click="SettingsButton_Click"/>
-        <Button x:Name="ExitButton" Grid.Row="3" Grid.Column="1" Content="Exit" Width="160" Height="40" Margin="0,0,0,20" Click="ExitButton_Click"/>
+        <Button x:Name="StartButton" Grid.Row="1" Grid.Column="1" Content="Start" Width="160" Height="40" Margin="0,0,0,20" Command="{Binding StartButtonCommand}"/>
+        <Button x:Name="SettingsButton" Grid.Row="2" Grid.Column="1" Content="Settings" Width="160" Height="40" Margin="0,0,0,20" Command="{Binding SettingsButtonCommand}"/>
+        <Button 
+            x:Name="ExitButton" 
+            Grid.Row="3"
+            Grid.Column="1" 
+            Content="Exit" 
+            Width="160" 
+            Height="40" 
+            Margin="0,0,0,20"           
+            Command="{Binding ExitButtonCommand}" />
+            <!--CommandParameter="{Binding ElementName=StartPanel}"-->
     </Grid>
 </Window>
