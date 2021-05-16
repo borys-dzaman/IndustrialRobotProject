@@ -22,10 +22,10 @@ namespace IndustrialRobot.Views
     /// <summary>
     /// Interaction logic for ControlPanelView.xaml
     /// </summary>
-    public partial class ControlPanelView : Window
+    public partial class ControlPanelView
     {
-        private MainViewModel mainViewModel;
-        private MainView mainView;
+        //public MainView mainView;
+        public SerialPort serialPort;
         private static System.Timers.Timer aTimer;
         private static System.Timers.Timer bTimer;
         private bool blockAllButtons = false;
@@ -37,11 +37,12 @@ namespace IndustrialRobot.Views
         //string[] positionArray = new string[999];
         public Dictionary<ushort, string> positionDictionary = new Dictionary<ushort, string>();
 
-        public ControlPanelView(MainViewModel mainViewModel)
+        public ControlPanelView(SerialPort sP)
         {
-            mainViewModel.Hide();
+            serialPort = sP;
+            //mainView.Hide();
             InitializeComponent();
-            mainViewModel.serialPort.DataReceived += new SerialDataReceivedEventHandler(IncomingDataEvent);
+            serialPort.DataReceived += new SerialDataReceivedEventHandler(IncomingDataEvent);
             PositionNumberTextBox.Text = positionNumber.ToString();
             UltraSafeMenuItem.Click += new RoutedEventHandler(UltraSafeModeRadioButton_Checked);  
             SafeMenuItem.Click += new RoutedEventHandler(SafeModeRadioButton_Checked);
@@ -223,7 +224,7 @@ namespace IndustrialRobot.Views
 
         private void IncomingDataEvent(object sender, SerialDataReceivedEventArgs e)
         {
-            response = mainViewModel.serialPort.ReadExisting();
+            response = serialPort.ReadExisting();
             if (response != string.Empty) Dispatcher.BeginInvoke(new PrintToResponseTextBox(TextToResponse), new object[] { response });        
         }
 
@@ -240,8 +241,8 @@ namespace IndustrialRobot.Views
             ResponseTextBox.Clear();
             try
             {             
-                mainViewModel.serialPort.Write("SP " + SpeedSlider.Value.ToString() + "\r");
-                mainViewModel.serialPort.Write(CommandTextBox.Text.ToString() + "\r");
+                serialPort.Write("SP " + SpeedSlider.Value.ToString() + "\r");
+                serialPort.Write(CommandTextBox.Text.ToString() + "\r");
                 CommandTextBox.Clear();
             }
             catch (Exception ex)
@@ -262,8 +263,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DJ 1,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 1,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -284,8 +285,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DJ 1," + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 1," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -306,8 +307,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DJ 2,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 2,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -328,8 +329,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DJ 2," + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 2," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -350,8 +351,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DJ 3,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 3,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -372,8 +373,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DJ 3," + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 3," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -394,8 +395,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DJ 4,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 4,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -416,8 +417,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DJ 4," + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 4," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -438,8 +439,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DJ 5,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 5,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -460,8 +461,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DJ 5," + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 5," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -482,8 +483,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DJ 6,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 6,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -504,8 +505,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DJ 6," + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 6," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -525,7 +526,7 @@ namespace IndustrialRobot.Views
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            mainView.Show();
+            //mainView.Show();
         }
 
         private void OpenGripButton_Click(object sender, RoutedEventArgs e)
@@ -534,7 +535,7 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("GO" + "\r");
+                    serialPort.Write("GO" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -555,7 +556,7 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("GC" + "\r");
+                    serialPort.Write("GC" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -580,8 +581,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DS " + XYZIncrement.Text + ",0,0" + "\r");
+                    serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DS " + XYZIncrement.Text + ",0,0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -602,8 +603,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DS -" + XYZIncrement.Text + ",0,0" + "\r");
+                    serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DS -" + XYZIncrement.Text + ",0,0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -624,8 +625,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DS 0," + XYZIncrement.Text + ",0" + "\r");
+                    serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DS 0," + XYZIncrement.Text + ",0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -646,8 +647,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DS 0,-" + XYZIncrement.Text + ",0" + "\r");
+                    serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DS 0,-" + XYZIncrement.Text + ",0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -668,8 +669,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DS 0,0," + XYZIncrement.Text + "\r");
+                    serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DS 0,0," + XYZIncrement.Text + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -690,8 +691,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    mainViewModel.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
-                    mainViewModel.serialPort.Write("DS 0,0,-" + XYZIncrement.Text + "\r");
+                    serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DS 0,0,-" + XYZIncrement.Text + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -785,7 +786,7 @@ namespace IndustrialRobot.Views
                 {
                     if (Convert.ToUInt16(PositionNumberTextBox.Text) > 0 && Convert.ToUInt16(PositionNumberTextBox.Text) < 1000)
                     {                      
-                        mainViewModel.serialPort.Write("HE " + PositionNumberTextBox.Text + "\r");     
+                        serialPort.Write("HE " + PositionNumberTextBox.Text + "\r");     
                     }
                     else
                     {
@@ -812,7 +813,7 @@ namespace IndustrialRobot.Views
                     //for (ushort i = 1; i < 1000; i++)
                     //{
                     //ResponseTextBox.Clear();
-                    //mainViewModel.serialPort.Write("PR " + $"{i}" + "\r");
+                    //serialPort.Write("PR " + $"{i}" + "\r");
                     //positionDictionary[i] = response;
                     //response = "";
                     //}

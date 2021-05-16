@@ -19,7 +19,7 @@ using IndustrialRobot.Views.Interfaces;
 
 namespace IndustrialRobot.ViewModels
 {
-    public class MainViewModel : Window
+    public class MainViewModel
     {
         public SerialPort serialPort = new SerialPort();
         public ICommand StartButtonCommand { get; set; }        
@@ -51,7 +51,7 @@ namespace IndustrialRobot.ViewModels
                     serialPort.StopBits = Properties.Settings.Default.StopBits;
                     serialPort.Open();
                 }
-                ControlPanelView controlPanelView = new ControlPanelView(this);
+                ControlPanelView controlPanelView = new ControlPanelView(serialPort);
                 serialPort.Write("SP 1" + "\r");
                 serialPort.Write("WH" + "\r");
                 controlPanelView.ShowDialog();
@@ -77,6 +77,7 @@ namespace IndustrialRobot.ViewModels
             {
                 serialPort.Close();
                 window.Close();
+                Application.Current.Shutdown();
             }
         }
     }
