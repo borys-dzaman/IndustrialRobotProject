@@ -39,7 +39,7 @@
             Width="160" 
             Height="40" 
             Margin="0,0,0,20"           
-            Command="{Binding ExitButtonCommand}" />
-            <!--CommandParameter="{Binding ElementName=StartPanel}"-->
+            Command="{Binding ExitButtonCommand}"
+            CommandParameter="{Binding ElementName=StartPanel}"/>
     </Grid>
 </Window>

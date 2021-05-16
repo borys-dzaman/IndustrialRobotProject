@@ -19,21 +19,18 @@ using IndustrialRobot.Views.Interfaces;
 
 namespace IndustrialRobot.ViewModels
 {
-    public class MainViewModel : Window 
+    public class MainViewModel : Window
     {
         public SerialPort serialPort = new SerialPort();
         public ICommand StartButtonCommand { get; set; }        
         public ICommand SettingsButtonCommand { get; set; }
-        public ICommand ExitButtonCommand { get; set; }
-
-        //public RelayCommand<ICloseable> CloseWindowCommand { get; private set; }
+        public RelayCommand<ICloseable> ExitButtonCommand { get; private set; }
 
         public MainViewModel()
         {
             StartButtonCommand = new RelayCommand(ExecuteStartButton, CanExecuteStartButton);
             SettingsButtonCommand = new RelayCommand(ExecuteSettingsButton, CanExecuteSettingsButton);
-            ExitButtonCommand = new RelayCommand(ExecuteExitButton, CanExecuteExitButton);
-            //CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);     
+            ExitButtonCommand = new RelayCommand<ICloseable>(CloseWindow);     
         }
         private bool CanExecuteStartButton(object parameter)
         {
@@ -74,24 +71,14 @@ namespace IndustrialRobot.ViewModels
             SettingsView settingsWindow = new SettingsView();
             settingsWindow.Show();
         }
-        private bool CanExecuteExitButton(object parameter)
+        private void CloseWindow(ICloseable window)
         {
-            return true;
+            if (window != null)
+            {
+                serialPort.Close();
+                window.Close();
+            }
         }
-
-        private void ExecuteExitButton(object parameter)
-        {
-            serialPort.Close();
-            Close(); //nie zamyka okna!
-        }
-        //private void CloseWindow(ICloseable window)
-        //{
-        //    if (window != null)
-        //    {
-        //        serialPort.Close();
-        //        window.Close();
-        //    }
-        //}
     }
     
 }
