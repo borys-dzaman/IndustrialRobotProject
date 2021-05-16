@@ -69,7 +69,7 @@ namespace IndustrialRobot.ViewModels
         private void ExecuteSettingsButton(object parameter)
         {
             SettingsView settingsWindow = new SettingsView();
-            settingsWindow.Show();
+            settingsWindow.ShowDialog();
         }
         private void CloseWindow(ICloseable window)
         {
@@ -77,7 +77,6 @@ namespace IndustrialRobot.ViewModels
             {
                 serialPort.Close();
                 window.Close();
-                Application.Current.Shutdown();
             }
         }
     }
