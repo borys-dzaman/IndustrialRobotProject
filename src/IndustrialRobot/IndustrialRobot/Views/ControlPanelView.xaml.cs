@@ -36,6 +36,7 @@ namespace IndustrialRobot.Views
         private ushort positionNumber = 1;
         //string[] positionArray = new string[999];
         public Dictionary<ushort, string> positionDictionary = new Dictionary<ushort, string>();
+        private string modified_response;
 
         public ControlPanelView(SerialPort sP)
         {
@@ -715,32 +716,200 @@ namespace IndustrialRobot.Views
 
         private void UpAButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("WH" + "\r");
+                    Thread.Sleep(100); // wait for robot response
+                    response = ResponseTextBox.Text;
+                    double coordinate = 0;
+                    string[] values = response.Split(',');
+                    coordinate = Convert.ToDouble(values[3]);
+                    string increment = ABCIncrement.Text.Replace('.', ',');
+                    coordinate += Convert.ToDouble(increment);
+                    values[3] = coordinate.ToString();
+                    modified_response = string.Join(",", values);
+                    serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    serialPort.Write("MS 999" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void DownAButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("WH" + "\r");
+                    Thread.Sleep(100); // wait for robot response
+                    response = ResponseTextBox.Text;
+                    double coordinate = 0;
+                    string[] values = response.Split(',');
+                    coordinate = Convert.ToDouble(values[3]);
+                    string increment = ABCIncrement.Text.Replace('.', ',');
+                    coordinate -= Convert.ToDouble(increment);
+                    values[3] = coordinate.ToString();
+                    modified_response = string.Join(",", values);
+                    serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    serialPort.Write("MS 999" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void UpBButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("WH" + "\r");
+                    Thread.Sleep(100); // wait for robot response
+                    response = ResponseTextBox.Text;
+                    double coordinate = 0;
+                    string[] values = response.Split(',');
+                    coordinate = Convert.ToDouble(values[4]);
+                    string increment = ABCIncrement.Text.Replace('.', ',');
+                    coordinate += Convert.ToDouble(increment);
+                    values[4] = coordinate.ToString();
+                    modified_response = string.Join(",", values);
+                    serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    serialPort.Write("MS 999" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void DownBButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("WH" + "\r");
+                    Thread.Sleep(100); // wait for robot response
+                    response = ResponseTextBox.Text;
+                    double coordinate = 0;
+                    string[] values = response.Split(',');
+                    coordinate = Convert.ToDouble(values[4]);
+                    string increment = ABCIncrement.Text.Replace('.', ',');
+                    coordinate -= Convert.ToDouble(increment);
+                    values[4] = coordinate.ToString();
+                    modified_response = string.Join(",", values);
+                    serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    serialPort.Write("MS 999" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void RightCButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("WH" + "\r");
+                    Thread.Sleep(100); // wait for robot response
+                    response = ResponseTextBox.Text;
+                    double coordinate = 0;
+                    string[] values = response.Split(',');
+                    coordinate = Convert.ToDouble(values[5]);
+                    string increment = ABCIncrement.Text.Replace('.', ',');
+                    coordinate += Convert.ToDouble(increment);
+                    values[5] = coordinate.ToString();
+                    modified_response = string.Join(",", values);
+                    serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    serialPort.Write("MS 999" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void LeftCButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("WH" + "\r");
+                    Thread.Sleep(100); // wait for robot response
+                    response = ResponseTextBox.Text;
+                    double coordinate = 0;
+                    string[] values = response.Split(',');
+                    coordinate = Convert.ToDouble(values[5]);
+                    string increment = ABCIncrement.Text.Replace('.', ',');
+                    coordinate -= Convert.ToDouble(increment);
+                    values[5] = coordinate.ToString();
+                    modified_response = string.Join(",", values);
+                    serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    serialPort.Write("MS 999" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         #endregion
