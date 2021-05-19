@@ -16,6 +16,7 @@ using System.Timers;
 using REghZyFramework.Themes;
 using System.Threading;
 using IndustrialRobot.ViewModels;
+using System.Windows.Threading;
 
 namespace IndustrialRobot.Views
 {
@@ -35,7 +36,6 @@ namespace IndustrialRobot.Views
         private Thickness myThickness;
         private ushort positionNumber = 1;
         //string[] positionArray = new string[999];
-        public Dictionary<ushort, string> positionDictionary = new Dictionary<ushort, string>();
         private string modified_response;
 
         public ControlPanelView(SerialPort sP)
@@ -289,8 +289,6 @@ namespace IndustrialRobot.Views
         {
             ResponseTextBox.Clear();
             ResponseTextBox.Text += text;
-            positionDictionary.Remove(Convert.ToUInt16(PositionNumberTextBox.Text));
-            positionDictionary.Add(Convert.ToUInt16(PositionNumberTextBox.Text), ResponseTextBox.Text);
         }
 
         private void SendCommandButton_Click(object sender, RoutedEventArgs e)
@@ -772,8 +770,8 @@ namespace IndustrialRobot.Views
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
-                    Thread.Sleep(100); // wait for robot response
-                    response = ResponseTextBox.Text;
+                    Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
+                    response = ResponseTextBox.Text; // takes new response
                     double coordinate = 0;
                     string[] values = response.Split(',');
                     coordinate = Convert.ToDouble(values[3]);
@@ -795,6 +793,7 @@ namespace IndustrialRobot.Views
             {
                 MessageBox.Show(ex.Message);
             }
+            
         }
 
         private void DownAButton_Click(object sender, RoutedEventArgs e)
@@ -805,7 +804,7 @@ namespace IndustrialRobot.Views
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
-                    Thread.Sleep(100); // wait for robot response
+                    Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text;
                     double coordinate = 0;
                     string[] values = response.Split(',');
@@ -838,7 +837,7 @@ namespace IndustrialRobot.Views
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
-                    Thread.Sleep(100); // wait for robot response
+                    Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text;
                     double coordinate = 0;
                     string[] values = response.Split(',');
@@ -871,7 +870,7 @@ namespace IndustrialRobot.Views
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
-                    Thread.Sleep(100); // wait for robot response
+                    Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text;
                     double coordinate = 0;
                     string[] values = response.Split(',');
@@ -904,7 +903,7 @@ namespace IndustrialRobot.Views
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
-                    Thread.Sleep(100); // wait for robot response
+                    Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text;
                     double coordinate = 0;
                     string[] values = response.Split(',');
@@ -937,7 +936,7 @@ namespace IndustrialRobot.Views
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
-                    Thread.Sleep(100); // wait for robot response
+                    Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text;
                     double coordinate = 0;
                     string[] values = response.Split(',');

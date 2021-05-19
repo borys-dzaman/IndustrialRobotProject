@@ -10,7 +10,11 @@
         <DropShadowBitmapEffect x:Key="NormalShadow" ShadowDepth="2" Softness="0.2" Opacity="0.64"/>
     </Window.Resources>
     <Grid>
-        <Menu>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="31*"/>
+            <RowDefinition Height="59*"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.RowSpan="2">
             <MenuItem Header="Settings" Height="25">
                 <MenuItem Header="Themes" Template="{DynamicResource DropDownMenuItemStyle}">
                     <MenuItem Header="Light" Template="{DynamicResource SingleDropDownMenuItem}" Click="ChangeTheme" Uid="0">
@@ -44,7 +48,7 @@
                 </MenuItem>
             </MenuItem>
         </Menu>
-        <TabControl Margin="0,25,0,0">
+        <TabControl Margin="0,25,0,0" Grid.RowSpan="2">
             <TabItem Header="Command Tool">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -59,10 +63,10 @@
                         <RowDefinition Height="20" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="35" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="20" />
