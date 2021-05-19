@@ -166,6 +166,8 @@
                     <Label Margin="0,64,0,72" Grid.Column="1" FontSize="12" Content="Safe Mode" Grid.RowSpan="2" />
                     <RadioButton x:Name="LudicrousModeRadioButton" Grid.Column="2" Checked="LudicrousModeRadioButton_Checked" Margin="5,0,5,56" Click="LudicrousModeRadioButton_Click" Height="Auto" Grid.Row="1"/>
                     <Label Grid.Row="1" Grid.Column="1" Margin="0,0,0,39" FontSize="12" Content="Ludicrous Mode"/>
+                    <Button x:Name="StopJointsButton" Content="STOP" Grid.Column="7" HorizontalAlignment="Left" Margin="99,64,0,0" VerticalAlignment="Top" Width="75" Grid.RowSpan="2" Background="Yellow" Foreground="Red" FontWeight="Bold" Click="StopJointsButton_Click"/>
+                    <Button x:Name="ResetJointsButton" Content="RESET" Grid.Column="7" HorizontalAlignment="Left" Margin="99,21,0,0" VerticalAlignment="Top" Width="75" Grid.Row="1" Click="ResetJointsButton_Click"/>
                 </Grid>
 
             </TabItem>
@@ -306,6 +308,8 @@
                             <Label Content="A" HorizontalAlignment="Left" Margin="306,261,0,0" VerticalAlignment="Top"/>
                             <Label Content="B" HorizontalAlignment="Left" Margin="241,111,0,0" VerticalAlignment="Top"/>
                             <Label Content="C" HorizontalAlignment="Left" Margin="76,10,0,0" VerticalAlignment="Top"/>
+                            <Button x:Name="StopXYZButton" Content="STOP" HorizontalAlignment="Left" Margin="240,20,0,0" VerticalAlignment="Top" Width="75" Foreground="Red" Background="Yellow" FontWeight="Bold" Click="StopXYZButton_Click"/>
+                            <Button x:Name="ResetXYZButton" Content="RESET" HorizontalAlignment="Left" Margin="240,62,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.813,-0.852" Click="ResetXYZButton_Click"/>
                         </Grid>
                     </GroupBox>
                 </Grid>

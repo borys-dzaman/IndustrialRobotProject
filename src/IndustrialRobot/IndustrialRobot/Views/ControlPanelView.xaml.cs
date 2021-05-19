@@ -72,6 +72,56 @@ namespace IndustrialRobot.Views
             e.Handled = true;
         }
 
+        #region Emergency Buttons:
+        private void StopJointsButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                serialPort.Write("HLT" + "\r");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void ResetJointsButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                serialPort.Write("RS 0" + "\r");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void StopXYZButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                serialPort.Write("HLT" + "\r");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void ResetXYZButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                serialPort.Write("RS 0" + "\r");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        #endregion
+
         #region Safety Modes:
 
         private void UltraSafeModeRadioButton_Checked(object sender, RoutedEventArgs e)
@@ -974,10 +1024,6 @@ namespace IndustrialRobot.Views
                 MessageBox.Show(ex.Message);
             }
         }
-
-        #endregion
-
-
         private void PositionDownloadButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -1003,6 +1049,9 @@ namespace IndustrialRobot.Views
             {
                 MessageBox.Show(ex.Message);
             }
-        }       
+        }
+
+        #endregion
+
     }
 }
