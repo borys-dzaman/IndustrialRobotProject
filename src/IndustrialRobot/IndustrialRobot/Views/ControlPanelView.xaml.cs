@@ -44,7 +44,7 @@ namespace IndustrialRobot.Views
             InitializeComponent();
             serialPort.DataReceived += new SerialDataReceivedEventHandler(IncomingDataEvent);
             PositionNumberTextBox.Text = positionNumber.ToString();
-            UltraSafeMenuItem.Click += new RoutedEventHandler(UltraSafeModeRadioButton_Checked);  
+            UltraSafeMenuItem.Click += new RoutedEventHandler(UltraSafeModeRadioButton_Checked);
             SafeMenuItem.Click += new RoutedEventHandler(SafeModeRadioButton_Checked);
             LudicrousMenuItem.Click += new RoutedEventHandler(LudicrousModeRadioButton_Click);
         }
@@ -81,11 +81,13 @@ namespace IndustrialRobot.Views
             JogSpeedSlider.IsEnabled = false;
             TurningAngleSlider.IsEnabled = false;
             JogSpeedSlider.Maximum = 1;
-            myThickness = new Thickness();
-            myThickness.Bottom = 28;
-            myThickness.Left = 0;
-            myThickness.Right = 89;
-            myThickness.Top = 20;
+            myThickness = new Thickness
+            {
+                Bottom = 28,
+                Left = 0,
+                Right = 89,
+                Top = 20
+            };
             JogSpeedSlider.Margin = myThickness;
             TurningAngleSlider.Maximum = 1;
             myThickness.Bottom = 0;
@@ -101,11 +103,13 @@ namespace IndustrialRobot.Views
             JogSpeedSlider.IsEnabled = true;
             TurningAngleSlider.IsEnabled = true;
             JogSpeedSlider.Maximum = 10;
-            myThickness = new Thickness();
-            myThickness.Bottom = 28;
-            myThickness.Left = 0;
-            myThickness.Right = 89;
-            myThickness.Top = 20;
+            myThickness = new Thickness
+            {
+                Bottom = 28,
+                Left = 0,
+                Right = 89,
+                Top = 20
+            };
             JogSpeedSlider.Margin = myThickness;
             TurningAngleSlider.Maximum = 10;
             myThickness.Bottom = 0;
@@ -122,11 +126,13 @@ namespace IndustrialRobot.Views
             JogSpeedSlider.IsEnabled = true;
             TurningAngleSlider.IsEnabled = true;
             JogSpeedSlider.Maximum = 30;
-            myThickness = new Thickness();
-            myThickness.Bottom = 28;
-            myThickness.Left = 0;
-            myThickness.Right = 31;
-            myThickness.Top = 20;
+            myThickness = new Thickness
+            {
+                Bottom = 28,
+                Left = 0,
+                Right = 31,
+                Top = 20
+            };
             JogSpeedSlider.Margin = myThickness;
             TurningAngleSlider.Maximum = 30;
             myThickness.Bottom = 0;
@@ -216,7 +222,7 @@ namespace IndustrialRobot.Views
         {
             LinearSpeedSlider.IsEnabled = true;
             LinearSpeedSlider.Maximum = 650;
-        }      
+        }
 
         #endregion:
 
@@ -225,7 +231,7 @@ namespace IndustrialRobot.Views
         private void IncomingDataEvent(object sender, SerialDataReceivedEventArgs e)
         {
             response = serialPort.ReadExisting();
-            if (response != string.Empty) Dispatcher.BeginInvoke(new PrintToResponseTextBox(TextToResponse), new object[] { response });        
+            if (response != string.Empty) Dispatcher.BeginInvoke(new PrintToResponseTextBox(TextToResponse), new object[] { response });
         }
 
         private void TextToResponse(string text)
@@ -240,7 +246,7 @@ namespace IndustrialRobot.Views
         {
             ResponseTextBox.Clear();
             try
-            {             
+            {
                 serialPort.Write("SP " + SpeedSlider.Value.ToString() + "\r");
                 serialPort.Write(CommandTextBox.Text.ToString() + "\r");
                 CommandTextBox.Clear();
@@ -278,7 +284,7 @@ namespace IndustrialRobot.Views
                 MessageBox.Show(ex.Message);
             }
         }
-        
+
         private void RightWaistButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -302,7 +308,7 @@ namespace IndustrialRobot.Views
         }
 
         private void LeftShoulderButton_Click(object sender, RoutedEventArgs e)
-        {           
+        {
             try
             {
                 if (blockAllButtons == false)
@@ -324,7 +330,7 @@ namespace IndustrialRobot.Views
         }
 
         private void RightShoulderButton_Click(object sender, RoutedEventArgs e)
-        {          
+        {
             try
             {
                 if (blockAllButtons == false)
@@ -346,7 +352,7 @@ namespace IndustrialRobot.Views
         }
 
         private void LeftElbowButton_Click(object sender, RoutedEventArgs e)
-        {         
+        {
             try
             {
                 if (blockAllButtons == false)
@@ -368,7 +374,7 @@ namespace IndustrialRobot.Views
         }
 
         private void RightElbowButton_Click(object sender, RoutedEventArgs e)
-        {          
+        {
             try
             {
                 if (blockAllButtons == false)
@@ -390,7 +396,7 @@ namespace IndustrialRobot.Views
         }
 
         private void LeftTwistButton_Click(object sender, RoutedEventArgs e)
-        {           
+        {
             try
             {
                 if (blockAllButtons == false)
@@ -434,7 +440,7 @@ namespace IndustrialRobot.Views
         }
 
         private void LeftPitchButton_Click(object sender, RoutedEventArgs e)
-        {         
+        {
             try
             {
                 if (blockAllButtons == false)
@@ -478,7 +484,7 @@ namespace IndustrialRobot.Views
         }
 
         private void LeftRollButton_Click(object sender, RoutedEventArgs e)
-        {         
+        {
             try
             {
                 if (blockAllButtons == false)
@@ -551,7 +557,7 @@ namespace IndustrialRobot.Views
         }
 
         private void CloseGripButton_Click(object sender, RoutedEventArgs e)
-        {           
+        {
             try
             {
                 if (blockAllButtons == false)
@@ -572,7 +578,7 @@ namespace IndustrialRobot.Views
         }
 
         #endregion
-        
+
         #region Jog XYZ Buttons:
 
         private void UpXButton_Click(object sender, RoutedEventArgs e)
@@ -581,7 +587,7 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("DS " + XYZIncrement.Text + ",0,0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
@@ -603,7 +609,7 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("DS -" + XYZIncrement.Text + ",0,0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
@@ -625,7 +631,7 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("DS 0," + XYZIncrement.Text + ",0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
@@ -647,7 +653,7 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("DS 0,-" + XYZIncrement.Text + ",0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
@@ -669,7 +675,7 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("DS 0,0," + XYZIncrement.Text + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
@@ -691,7 +697,7 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("DS 0,0,-" + XYZIncrement.Text + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
@@ -785,8 +791,8 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     if (Convert.ToUInt16(PositionNumberTextBox.Text) > 0 && Convert.ToUInt16(PositionNumberTextBox.Text) < 1000)
-                    {                      
-                        serialPort.Write("HE " + PositionNumberTextBox.Text + "\r");     
+                    {
+                        serialPort.Write("HE " + PositionNumberTextBox.Text + "\r");
                     }
                     else
                     {
@@ -802,6 +808,7 @@ namespace IndustrialRobot.Views
 
         #endregion
 
+
         private void PositionDownloadButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -810,14 +817,14 @@ namespace IndustrialRobot.Views
                 {
                     blockDownload = true;
                     bTimer = new System.Timers.Timer(10000);
+
                     //for (ushort i = 1; i < 1000; i++)
                     //{
-                    //ResponseTextBox.Clear();
-                    //serialPort.Write("PR " + $"{i}" + "\r");
-                    //positionDictionary[i] = response;
-                    //response = "";
+                    //    ResponseTextBox.Clear();
+                    //    serialPort.Write("PR " + $"{i}" + "\r");
+                    //    positionDictionary[i] = response;
+                    //    response = "";
                     //}
-                    //positionDictionary.ToList();
 
                     bTimer.Start();
                     bTimer.Elapsed += UnlockDownloadEvent;
@@ -827,6 +834,6 @@ namespace IndustrialRobot.Views
             {
                 MessageBox.Show(ex.Message);
             }
-        }
+        }       
     }
 }
