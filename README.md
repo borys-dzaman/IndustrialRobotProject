@@ -14,12 +14,11 @@ Min requirements:
 - JOINT jog operation to control robot movement in configuration space ✓
 
 Extra requirements:
-- uploading/downloading position list |in progress|
-- XYZ Jog operation to control robot movement in Cartesian space ✓/- to implement A,B,C rotations
+- downloading position list ✓
+- XYZ Jog operation to control robot movement in Cartesian space ✓
 - extra ideas
 
 ToDo:
-- refactor to MVVM?
-- extra req (up)
+- MVVM refactoring |in progress|
 - graphical improvements (robot image) ✓
 - "alphabet printer" (specifying commands for each letter, so the robot could draw it)
