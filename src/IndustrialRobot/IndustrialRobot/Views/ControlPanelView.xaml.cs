@@ -92,14 +92,14 @@ namespace IndustrialRobot.Views
         {
             LogRichTextBox.CaretPosition.Paragraph.FontSize = 12;
             LogRichTextBox.CaretPosition.Paragraph.Inlines.Add(new Run(DateTime.Now.ToString("HH:mm:ss ") + log) { Foreground = Brushes.Red });
-            LogRichTextBox.LineDown();
+            LogRichTextBox.LineDown();            
         }
 
         private void AddReceivedLog(string log)
         {
             LogRichTextBox.CaretPosition.Paragraph.FontSize = 12;
             LogRichTextBox.CaretPosition.Paragraph.Inlines.Add(new Run(DateTime.Now.ToString("HH:mm:ss ") + log) { Foreground = Brushes.Blue });
-            LogRichTextBox.LineDown();
+            LogRichTextBox.LineDown();               
         }
 
         private void ResetJointsButton_Click(object sender, RoutedEventArgs e)
