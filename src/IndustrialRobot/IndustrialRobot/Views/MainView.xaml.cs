@@ -1,4 +1,6 @@
-﻿using System;
+﻿using IndustrialRobot.ViewModels;
+using IndustrialRobot.Views.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
@@ -18,50 +20,14 @@ namespace IndustrialRobot.Views
     /// <summary>
     /// Interaction logic for MainView.xaml
     /// </summary>
-    public partial class MainView : Window
+    public partial class MainView : Window, ICloseable
     {
-        public SerialPort serialPort = new SerialPort();
         public MainView()
         {
             InitializeComponent();
+            //DataContext = new MainViewModel();
             //Uri iconUri = new Uri("rve2.png", UriKind.RelativeOrAbsolute);
             //this.Icon = BitmapFrame.Create(iconUri);
-        }
-        private void SettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            SettingsView settingsWindow = new SettingsView();
-            settingsWindow.Show();
-        }
-
-        private void ExitButton_Click(object sender, RoutedEventArgs e)
-        {
-            serialPort.Close();
-            Close();
-        }
-
-        private void StartButton_Click(object sender, RoutedEventArgs e)
-        {           
-            serialPort.Close();
-            try
-            {
-                if (serialPort.IsOpen == false)
-                {
-                    serialPort.PortName = Properties.Settings.Default.Port;
-                    serialPort.BaudRate = Properties.Settings.Default.BaudRate;
-                    serialPort.Parity = Properties.Settings.Default.Parity;
-                    serialPort.DataBits = Properties.Settings.Default.DataBits;
-                    serialPort.StopBits = Properties.Settings.Default.StopBits;
-                    serialPort.Open();
-                }
-                ControlPanelView controlPanelView = new ControlPanelView(this);
-                serialPort.Write("SP 1" + "\r");
-                serialPort.Write("WH" + "\r");
-                controlPanelView.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
         }
     }
 }

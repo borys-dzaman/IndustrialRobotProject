@@ -5,12 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IndustrialRobot.Views"
         mc:Ignorable="d"
-        Title="Control Panel" Height="513" Width="600" FontSize="20" FontFamily="Times New Roman" Closed="Window_Closed" Style="{DynamicResource CustomWindowStyle}">
+        Title="Control Panel" Height="513" Width="625" FontSize="20" FontFamily="Times New Roman" Closed="Window_Closed" Style="{DynamicResource CustomWindowStyle}">
     <Window.Resources>
         <DropShadowBitmapEffect x:Key="NormalShadow" ShadowDepth="2" Softness="0.2" Opacity="0.64"/>
     </Window.Resources>
     <Grid>
-        <Menu>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="31*"/>
+            <RowDefinition Height="59*"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.RowSpan="2">
             <MenuItem Header="Settings" Height="25">
                 <MenuItem Header="Themes" Template="{DynamicResource DropDownMenuItemStyle}">
                     <MenuItem Header="Light" Template="{DynamicResource SingleDropDownMenuItem}" Click="ChangeTheme" Uid="0">
@@ -44,7 +48,7 @@
                 </MenuItem>
             </MenuItem>
         </Menu>
-        <TabControl Margin="0,25,0,0">
+        <TabControl Margin="0,25,0,-10" Grid.RowSpan="2">
             <TabItem Header="Command Tool">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -59,10 +63,10 @@
                         <RowDefinition Height="20" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="35" />
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="20" />
@@ -116,7 +120,11 @@
                         <RowDefinition Height="20" />
                     </Grid.RowDefinitions>
 
-                    <Image Grid.Row="0" Grid.Column="5" Grid.ColumnSpan="3" Source="/IndustrialRobot;component/rve2.png" Stretch="Fill" Margin="0,0,0,1" Grid.RowSpan="9" HorizontalAlignment="Left" Width="342"/>
+                    <Image Grid.Row="0" Grid.Column="6" Grid.ColumnSpan="2" Source="/IndustrialRobot;component/rve2.png" Stretch="Fill" Margin="20,0,0,1" Grid.RowSpan="9" HorizontalAlignment="Left" Width="342">
+                        <Image.Effect>
+                            <DropShadowEffect/>
+                        </Image.Effect>
+                    </Image>
 
                     <GroupBox FontWeight="Bold" FontSize="17" Grid.Column="1" Grid.Row="1" Header="Joints:" Margin="0,46,33,0" Grid.RowSpan="9" Grid.ColumnSpan="4"/>
                     <Label Grid.Row="9" Grid.Column="1" Content="Waist"></Label>
@@ -166,6 +174,8 @@
                     <Label Margin="0,64,0,72" Grid.Column="1" FontSize="12" Content="Safe Mode" Grid.RowSpan="2" />
                     <RadioButton x:Name="LudicrousModeRadioButton" Grid.Column="2" Checked="LudicrousModeRadioButton_Checked" Margin="5,0,5,56" Click="LudicrousModeRadioButton_Click" Height="Auto" Grid.Row="1"/>
                     <Label Grid.Row="1" Grid.Column="1" Margin="0,0,0,39" FontSize="12" Content="Ludicrous Mode"/>
+                    <Button x:Name="StopJointsButton" Content="STOP" Grid.Column="7" HorizontalAlignment="Left" Margin="136,64,0,0" VerticalAlignment="Top" Width="75" Grid.RowSpan="2" Background="Red" Foreground="Black" FontWeight="ExtraBlack" Click="StopJointsButton_Click" BorderBrush="Yellow"/>
+                    <Button x:Name="ResetJointsButton" Content="RESET" Grid.Column="7" HorizontalAlignment="Left" Margin="136,21,0,0" VerticalAlignment="Top" Width="75" Grid.Row="1" Click="ResetJointsButton_Click"/>
                 </Grid>
 
             </TabItem>
@@ -180,20 +190,20 @@
                             </Grid>
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox Header="Jog increment" Width="200" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,94,0,135">
+                    <GroupBox Header="Jog increment" Width="200" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="0,94,0,147">
                         <StackPanel>
                             <Grid>
                                 <Slider x:Name="JogIncrementSlider" Margin="0,0,0,161" Maximum="100" Value="{Binding Text, ElementName=XYZIncrement}" SmallChange="0.01"/>
-                                <Label Margin="0,30">X,Y,Z:</Label>
+                                <Label Margin="0,30,0,66">X,Y,Z:</Label>
                                 <TextBox x:Name="XYZIncrement" Margin="70,30,47,128" Text="1.00"></TextBox>
                                 <Label Margin="146,30,-2,118" RenderTransformOrigin="1.948,-0.303">mm</Label>
-                                <Label Margin="0,60">A,B,C:</Label>
+                                <Label Margin="0,60,0,81">A,B,C:</Label>
                                 <TextBox x:Name="ABCIncrement" Margin="70,65,47,93" Text="1.00"></TextBox>
                                 <Label Margin="146,60,1,93">deg</Label>
                             </Grid>
                         </StackPanel>
                     </GroupBox>
-                    <GroupBox Header="Position list" Width="200" Height="130" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,40,0,0">
+                    <GroupBox Header="Position list" Width="200" Height="125" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0,0,0,15">
                         <StackPanel>
                             <Grid>
                                 <Label>Pos. no.:</Label>
@@ -227,7 +237,7 @@
                                     </Button>
                                 </Label>
                             </Grid>
-                            <Button x:Name="SavePositionButton" Margin="5,0,0,0" Width="178" Height="30" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="SavePositionButton_Click">Save current position</Button>
+                            <Button x:Name="SavePositionButton" Margin="5,0,0,0" Width="178" Height="28" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="SavePositionButton_Click" Content="Save current position"/>
 
 
 
@@ -306,6 +316,8 @@
                             <Label Content="A" HorizontalAlignment="Left" Margin="306,261,0,0" VerticalAlignment="Top"/>
                             <Label Content="B" HorizontalAlignment="Left" Margin="241,111,0,0" VerticalAlignment="Top"/>
                             <Label Content="C" HorizontalAlignment="Left" Margin="76,10,0,0" VerticalAlignment="Top"/>
+                            <Button x:Name="StopXYZButton" Content="STOP" HorizontalAlignment="Left" Margin="246,20,0,0" VerticalAlignment="Top" Width="75" Foreground="Black" Background="Red" Click="StopXYZButton_Click" BorderBrush="Yellow" FontWeight="ExtraBlack"/>
+                            <Button x:Name="ResetXYZButton" Content="RESET" HorizontalAlignment="Left" Margin="246,59,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.813,-0.852" Click="ResetXYZButton_Click"/>
                         </Grid>
                     </GroupBox>
                 </Grid>
@@ -313,19 +325,20 @@
 
             <TabItem Header="Positions">
                 <Grid>
-                    <Button x:Name="PositionDownloadButton" Content="Download position" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="182" Click="PositionDownloadButton_Click"/>
+                    <Button x:Name="PositionDownloadButton" Content="Download positions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="182" Click="PositionDownloadButton_Click"/>
                     <DataGrid x:Name="PositionDataGrid" HorizontalAlignment="Left" Height="322" Margin="10,54,0,0" VerticalAlignment="Top" Width="564">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Pos.No:" Binding="{Binding Path=positionDictionary}"></DataGridTextColumn>
-                        </DataGrid.Columns>
+
                     </DataGrid>
+                    <Label Content="Start:" HorizontalAlignment="Left" Margin="215,7,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="StartReadTextBox" HorizontalAlignment="Left" Height="23" Margin="268,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="49" Text="1"/>
+                    <Label Content="Finish:" HorizontalAlignment="Left" Margin="336,7,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.089,0.515"/>
+                    <TextBox x:Name="FinishReadTextBox" HorizontalAlignment="Left" Height="23" Margin="402,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="49" Text="10"/>
+                    <Button x:Name="ClearAllPositionsButton" Content="Clear All" HorizontalAlignment="Left" Margin="482,10,0,0" VerticalAlignment="Top" Width="92" Click="ClearAllPositionsButton_Click"/>
                 </Grid>
                 <!--<TextBox x:Name="LogTextBox" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="4" Margin="0,5,0.5,5" IsReadOnly="True"/>-->
             </TabItem>
             <TabItem Header="Details">
-                <GroupBox>
-                    <Image Margin="132,10" Source="/IndustrialRobot;component/details_rv_e2.png" Stretch="Fill"/>
-                </GroupBox>
+                <GroupBox Header="RV-E2&#xD;&#xA;6 Degree of freedom robot&#xD;&#xA;&#xD;&#xA;Robot arm:&#xD;&#xA;Max speed&#x9; &#x9;3500 mm/s&#xD;&#xA;Reachable radius&#x9;&#x9;621 mm&#xD;&#xA;Position repeatability&#x9;± 0,04 mm&#xD;&#xA;Load capacity&#x9;&#x9;2 kg&#xD;&#xA;&#xD;&#xA;Controller:&#xD;&#xA;Memory capacity &#x9;&#x9;62 kilobytes&#xD;&#xA;Max tasks&#x9;&#x9;1&#xD;&#xA;Max programs&#x9;&#x9;31&#xD;&#xA;Max positions&#x9;&#x9;999&#xD;&#xA;Max program lines&#x9;&#x9;4000&#xD;&#xA;Max I/O points&#x9;&#x9;60 I / 48 O" Margin="10,15,12,0" Height="370" VerticalAlignment="Top"/>
             </TabItem>
         </TabControl>
 

@@ -15,38 +15,41 @@ using System.IO.Ports;
 using System.Timers;
 using REghZyFramework.Themes;
 using System.Threading;
+using IndustrialRobot.ViewModels;
+using System.Windows.Threading;
+using System.Data;
 
 namespace IndustrialRobot.Views
 {
     /// <summary>
     /// Interaction logic for ControlPanelView.xaml
     /// </summary>
-    public partial class ControlPanelView : Window
+    public partial class ControlPanelView
     {
+        //public MainView mainView;
+        public SerialPort serialPort;
         private static System.Timers.Timer aTimer;
         private static System.Timers.Timer bTimer;
         private bool blockAllButtons = false;
         private bool blockDownload = false;
         public string response = string.Empty;
         delegate void PrintToResponseTextBox(string text);
-        private MainView main;
         private Thickness myThickness;
         private ushort positionNumber = 1;
-        //string[] positionArray = new string[999];
-        public Dictionary<ushort, string> positionDictionary = new Dictionary<ushort, string>();
+        public string[] positionArray = new string[1000];
+        private string modified_response;
+        bool sendCommandsLogs = true;
 
-        public ControlPanelView(MainView mainView)
+        public ControlPanelView(SerialPort sP)
         {
-            main = mainView;
-            mainView.Hide();
+            serialPort = sP;
+            //mainView.Hide();
             InitializeComponent();
-            main.serialPort.DataReceived += new SerialDataReceivedEventHandler(IncomingDataEvent);
-            //Uri iconUri = new Uri("rve2.png", UriKind.RelativeOrAbsolute);
-            //this.Icon = BitmapFrame.Create(iconUri);
+            serialPort.DataReceived += new SerialDataReceivedEventHandler(IncomingDataEvent);
             PositionNumberTextBox.Text = positionNumber.ToString();
-            UltraSafeMenuItem.Click += new RoutedEventHandler(UltraSafeModeRadioButton_Checked);  
+            UltraSafeMenuItem.Click += new RoutedEventHandler(UltraSafeModeRadioButton_Checked);
             SafeMenuItem.Click += new RoutedEventHandler(SafeModeRadioButton_Checked);
-            LudicrousMenuItem.Click += new RoutedEventHandler(LudicrousModeRadioButton_Click);            
+            LudicrousMenuItem.Click += new RoutedEventHandler(LudicrousModeRadioButton_Click);
         }
 
         private void UnlockButtonEvent(object sender, ElapsedEventArgs e)
@@ -71,6 +74,74 @@ namespace IndustrialRobot.Views
             e.Handled = true;
         }
 
+        #region Emergency Buttons:
+        private void StopJointsButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                serialPort.Write("HLT" + "\r");
+                if (sendCommandsLogs) AddSendLog("HLT" + "\r");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void AddSendLog(string log)
+        {
+            LogRichTextBox.CaretPosition.Paragraph.FontSize = 12;
+            LogRichTextBox.CaretPosition.Paragraph.Inlines.Add(new Run(DateTime.Now.ToString("HH:mm:ss ") + log) { Foreground = Brushes.Red });
+            LogRichTextBox.LineDown();            
+        }
+
+        private void AddReceivedLog(string log)
+        {
+            LogRichTextBox.CaretPosition.Paragraph.FontSize = 12;
+            LogRichTextBox.CaretPosition.Paragraph.Inlines.Add(new Run(DateTime.Now.ToString("HH:mm:ss ") + log) { Foreground = Brushes.Blue });
+            LogRichTextBox.LineDown();               
+        }
+
+        private void ResetJointsButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                serialPort.Write("RS 0" + "\r");
+                if (sendCommandsLogs) AddSendLog("RS 0" + "\r");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void StopXYZButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                serialPort.Write("HLT" + "\r");
+                if (sendCommandsLogs) AddSendLog("HLT" + "\r");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void ResetXYZButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                serialPort.Write("RS 0" + "\r");
+                if (sendCommandsLogs) AddSendLog("RS 0" + "\r");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        #endregion
+
         #region Safety Modes:
 
         private void UltraSafeModeRadioButton_Checked(object sender, RoutedEventArgs e)
@@ -81,11 +152,13 @@ namespace IndustrialRobot.Views
             JogSpeedSlider.IsEnabled = false;
             TurningAngleSlider.IsEnabled = false;
             JogSpeedSlider.Maximum = 1;
-            myThickness = new Thickness();
-            myThickness.Bottom = 28;
-            myThickness.Left = 0;
-            myThickness.Right = 89;
-            myThickness.Top = 20;
+            myThickness = new Thickness
+            {
+                Bottom = 28,
+                Left = 0,
+                Right = 89,
+                Top = 20
+            };
             JogSpeedSlider.Margin = myThickness;
             TurningAngleSlider.Maximum = 1;
             myThickness.Bottom = 0;
@@ -101,11 +174,13 @@ namespace IndustrialRobot.Views
             JogSpeedSlider.IsEnabled = true;
             TurningAngleSlider.IsEnabled = true;
             JogSpeedSlider.Maximum = 10;
-            myThickness = new Thickness();
-            myThickness.Bottom = 28;
-            myThickness.Left = 0;
-            myThickness.Right = 89;
-            myThickness.Top = 20;
+            myThickness = new Thickness
+            {
+                Bottom = 28,
+                Left = 0,
+                Right = 89,
+                Top = 20
+            };
             JogSpeedSlider.Margin = myThickness;
             TurningAngleSlider.Maximum = 10;
             myThickness.Bottom = 0;
@@ -122,11 +197,13 @@ namespace IndustrialRobot.Views
             JogSpeedSlider.IsEnabled = true;
             TurningAngleSlider.IsEnabled = true;
             JogSpeedSlider.Maximum = 30;
-            myThickness = new Thickness();
-            myThickness.Bottom = 28;
-            myThickness.Left = 0;
-            myThickness.Right = 31;
-            myThickness.Top = 20;
+            myThickness = new Thickness
+            {
+                Bottom = 28,
+                Left = 0,
+                Right = 31,
+                Top = 20
+            };
             JogSpeedSlider.Margin = myThickness;
             TurningAngleSlider.Maximum = 30;
             myThickness.Bottom = 0;
@@ -216,7 +293,7 @@ namespace IndustrialRobot.Views
         {
             LinearSpeedSlider.IsEnabled = true;
             LinearSpeedSlider.Maximum = 650;
-        }      
+        }
 
         #endregion:
 
@@ -224,25 +301,26 @@ namespace IndustrialRobot.Views
 
         private void IncomingDataEvent(object sender, SerialDataReceivedEventArgs e)
         {
-            response = main.serialPort.ReadExisting();
-            if (response != string.Empty) Dispatcher.BeginInvoke(new PrintToResponseTextBox(TextToResponse), new object[] { response });        
+            response = serialPort.ReadExisting();
+            if (response != string.Empty) Dispatcher.BeginInvoke(new PrintToResponseTextBox(TextToResponse), new object[] { response });
         }
 
         private void TextToResponse(string text)
         {
             ResponseTextBox.Clear();
             ResponseTextBox.Text += text;
-            positionDictionary.Remove(Convert.ToUInt16(PositionNumberTextBox.Text));
-            positionDictionary.Add(Convert.ToUInt16(PositionNumberTextBox.Text), ResponseTextBox.Text);
+            AddReceivedLog(ResponseTextBox.Text);
         }
 
         private void SendCommandButton_Click(object sender, RoutedEventArgs e)
         {
             ResponseTextBox.Clear();
             try
-            {             
-                main.serialPort.Write("SP " + SpeedSlider.Value.ToString() + "\r");
-                main.serialPort.Write(CommandTextBox.Text.ToString() + "\r");
+            {
+                serialPort.Write("SP " + SpeedSlider.Value.ToString() + "\r");
+                if (sendCommandsLogs) AddSendLog("SP " + SpeedSlider.Value.ToString() + "\r");
+                serialPort.Write(CommandTextBox.Text.ToString() + "\r");
+                if (sendCommandsLogs) AddSendLog(CommandTextBox.Text.ToString() + "\r");
                 CommandTextBox.Clear();
             }
             catch (Exception ex)
@@ -263,8 +341,10 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 1,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 1,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 1,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -278,15 +358,17 @@ namespace IndustrialRobot.Views
                 MessageBox.Show(ex.Message);
             }
         }
-        
+
         private void RightWaistButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 1," + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 1," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 1," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -302,13 +384,15 @@ namespace IndustrialRobot.Views
         }
 
         private void LeftShoulderButton_Click(object sender, RoutedEventArgs e)
-        {           
+        {
             try
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 2,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 2,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 2,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -324,13 +408,15 @@ namespace IndustrialRobot.Views
         }
 
         private void RightShoulderButton_Click(object sender, RoutedEventArgs e)
-        {          
+        {
             try
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 2," + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 2," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 2," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -346,13 +432,15 @@ namespace IndustrialRobot.Views
         }
 
         private void LeftElbowButton_Click(object sender, RoutedEventArgs e)
-        {         
+        {
             try
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 3,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 3,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 3,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -368,13 +456,15 @@ namespace IndustrialRobot.Views
         }
 
         private void RightElbowButton_Click(object sender, RoutedEventArgs e)
-        {          
+        {
             try
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 3," + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 3," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 3," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -390,13 +480,15 @@ namespace IndustrialRobot.Views
         }
 
         private void LeftTwistButton_Click(object sender, RoutedEventArgs e)
-        {           
+        {
             try
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 4,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 4,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 4,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -417,8 +509,10 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 4," + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 4," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 4," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -434,13 +528,15 @@ namespace IndustrialRobot.Views
         }
 
         private void LeftPitchButton_Click(object sender, RoutedEventArgs e)
-        {         
+        {
             try
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 5,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 5,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 5,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -461,8 +557,10 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 5," + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 5," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 5," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -478,13 +576,15 @@ namespace IndustrialRobot.Views
         }
 
         private void LeftRollButton_Click(object sender, RoutedEventArgs e)
-        {         
+        {
             try
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 6,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 6,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 6,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -505,8 +605,10 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DJ 6," + TurningAngleSlider.Value.ToString() + "\r");
+                    serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    serialPort.Write("DJ 6," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 6," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -526,7 +628,7 @@ namespace IndustrialRobot.Views
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            main.Show();
+            //mainView.Show();
         }
 
         private void OpenGripButton_Click(object sender, RoutedEventArgs e)
@@ -535,7 +637,8 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("GO" + "\r");
+                    serialPort.Write("GO" + "\r");
+                    if (sendCommandsLogs) AddSendLog("GO" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -551,12 +654,13 @@ namespace IndustrialRobot.Views
         }
 
         private void CloseGripButton_Click(object sender, RoutedEventArgs e)
-        {           
+        {
             try
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("GC" + "\r");
+                    serialPort.Write("GC" + "\r");
+                    if (sendCommandsLogs) AddSendLog("GC" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -572,7 +676,7 @@ namespace IndustrialRobot.Views
         }
 
         #endregion
-        
+
         #region Jog XYZ Buttons:
 
         private void UpXButton_Click(object sender, RoutedEventArgs e)
@@ -581,8 +685,10 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DS " + XYZIncrement.Text + ",0,0" + "\r");
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("DS " + XYZIncrement.Text + ",0,0" + "\r");
+                    if (sendCommandsLogs) AddSendLog("DS " + XYZIncrement.Text + ",0,0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -603,8 +709,10 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DS -" + XYZIncrement.Text + ",0,0" + "\r");
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("DS -" + XYZIncrement.Text + ",0,0" + "\r");
+                    if (sendCommandsLogs) AddSendLog("DS -" + XYZIncrement.Text + ",0,0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -625,8 +733,10 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DS 0," + XYZIncrement.Text + ",0" + "\r");
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("DS 0," + XYZIncrement.Text + ",0" + "\r");
+                    if (sendCommandsLogs) AddSendLog("DS 0," + XYZIncrement.Text + ",0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -647,8 +757,10 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DS 0,-" + XYZIncrement.Text + ",0" + "\r");
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("DS 0,-" + XYZIncrement.Text + ",0" + "\r");
+                    if (sendCommandsLogs) AddSendLog("DS 0,-" + XYZIncrement.Text + ",0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -669,8 +781,10 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DS 0,0," + XYZIncrement.Text + "\r");
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("DS 0,0," + XYZIncrement.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("DS 0,0," + XYZIncrement.Text + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -691,8 +805,10 @@ namespace IndustrialRobot.Views
             {
                 if (blockAllButtons == false)
                 {
-                    main.serialPort.Write("SD " + LinearSpeedSlider.Value.ToString() + "\r");
-                    main.serialPort.Write("DS 0,0,-" + XYZIncrement.Text + "\r");
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("DS 0,0,-" + XYZIncrement.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("DS 0,0,-" + XYZIncrement.Text + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -709,32 +825,231 @@ namespace IndustrialRobot.Views
 
         private void UpAButton_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("WH" + "\r");
+                    if (sendCommandsLogs) AddSendLog("WH" + "\r");
+                    Thread.Sleep(50);
+                    Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
+                    response = ResponseTextBox.Text; // takes new response
+                    double coordinate = 0;
+                    string[] values = response.Split(',');
+                    coordinate = Convert.ToDouble(values[3]);
+                    string increment = ABCIncrement.Text.Replace('.', ',');
+                    coordinate += Convert.ToDouble(increment);
+                    values[3] = coordinate.ToString();
+                    modified_response = string.Join(",", values);
+                    serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
+                    serialPort.Write("MS 999" + "\r");
+                    if (sendCommandsLogs) AddSendLog("MS 999" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             
         }
 
         private void DownAButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("WH" + "\r");
+                    if (sendCommandsLogs) AddSendLog("WH" + "\r");
+                    Thread.Sleep(50);
+                    Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
+                    response = ResponseTextBox.Text;
+                    double coordinate = 0;
+                    string[] values = response.Split(',');
+                    coordinate = Convert.ToDouble(values[3]);
+                    string increment = ABCIncrement.Text.Replace('.', ',');
+                    coordinate -= Convert.ToDouble(increment);
+                    values[3] = coordinate.ToString();
+                    modified_response = string.Join(",", values);
+                    serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
+                    serialPort.Write("MS 999" + "\r");
+                    if (sendCommandsLogs) AddSendLog("MS 999" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void UpBButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("WH" + "\r");
+                    if (sendCommandsLogs) AddSendLog("WH" + "\r");
+                    Thread.Sleep(50);
+                    Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
+                    response = ResponseTextBox.Text;
+                    double coordinate = 0;
+                    string[] values = response.Split(',');
+                    coordinate = Convert.ToDouble(values[4]);
+                    string increment = ABCIncrement.Text.Replace('.', ',');
+                    coordinate += Convert.ToDouble(increment);
+                    values[4] = coordinate.ToString();
+                    modified_response = string.Join(",", values);
+                    serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
+                    serialPort.Write("MS 999" + "\r");
+                    if (sendCommandsLogs) AddSendLog("MS 999" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void DownBButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("WH" + "\r");
+                    if (sendCommandsLogs) AddSendLog("WH" + "\r");
+                    Thread.Sleep(50);
+                    Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
+                    response = ResponseTextBox.Text;
+                    double coordinate = 0;
+                    string[] values = response.Split(',');
+                    coordinate = Convert.ToDouble(values[4]);
+                    string increment = ABCIncrement.Text.Replace('.', ',');
+                    coordinate -= Convert.ToDouble(increment);
+                    values[4] = coordinate.ToString();
+                    modified_response = string.Join(",", values);
+                    serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
+                    serialPort.Write("MS 999" + "\r");
+                    if (sendCommandsLogs) AddSendLog("MS 999" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void RightCButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("WH" + "\r");
+                    if (sendCommandsLogs) AddSendLog("WH" + "\r");
+                    Thread.Sleep(50);
+                    Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
+                    response = ResponseTextBox.Text;
+                    double coordinate = 0;
+                    string[] values = response.Split(',');
+                    coordinate = Convert.ToDouble(values[5]);
+                    string increment = ABCIncrement.Text.Replace('.', ',');
+                    coordinate += Convert.ToDouble(increment);
+                    values[5] = coordinate.ToString();
+                    modified_response = string.Join(",", values);
+                    serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
+                    serialPort.Write("MS 999" + "\r");
+                    if (sendCommandsLogs) AddSendLog("MS 999" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void LeftCButton_Click(object sender, RoutedEventArgs e)
         {
-
+            try
+            {
+                if (blockAllButtons == false)
+                {
+                    serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
+                    serialPort.Write("WH" + "\r");
+                    if (sendCommandsLogs) AddSendLog("WH" + "\r");
+                    Thread.Sleep(50);
+                    Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
+                    response = ResponseTextBox.Text;
+                    double coordinate = 0;
+                    string[] values = response.Split(',');
+                    coordinate = Convert.ToDouble(values[5]);
+                    string increment = ABCIncrement.Text.Replace('.', ',');
+                    coordinate -= Convert.ToDouble(increment);
+                    values[5] = coordinate.ToString();
+                    modified_response = string.Join(",", values);
+                    serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
+                    serialPort.Write("MS 999" + "\r");
+                    if (sendCommandsLogs) AddSendLog("MS 999" + "\r");
+                    if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
+                    {
+                        blockAllButtons = true;
+                        aTimer.Start();
+                        aTimer.Elapsed += UnlockButtonEvent;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         #endregion
@@ -745,6 +1060,12 @@ namespace IndustrialRobot.Views
         #endregion
 
         #region Positions:
+
+        class Position
+        {
+            public int Number { get; set; }
+            public string Coordinates { get; set; }
+        }
 
         private void UpPositionNumberButton_Click(object sender, RoutedEventArgs e)
         {
@@ -785,8 +1106,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     if (Convert.ToUInt16(PositionNumberTextBox.Text) > 0 && Convert.ToUInt16(PositionNumberTextBox.Text) < 1000)
-                    {                      
-                        main.serialPort.Write("HE " + PositionNumberTextBox.Text + "\r");     
+                    {
+                        serialPort.Write("HE " + PositionNumberTextBox.Text + "\r");
+                        if (sendCommandsLogs) AddSendLog("HE " + PositionNumberTextBox.Text + "\r");
                     }
                     else
                     {
@@ -799,9 +1121,6 @@ namespace IndustrialRobot.Views
                 MessageBox.Show(ex.Message);
             }
         }
-
-        #endregion
-
         private void PositionDownloadButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -809,18 +1128,35 @@ namespace IndustrialRobot.Views
                 if (blockDownload == false)
                 {
                     blockDownload = true;
-                    bTimer = new System.Timers.Timer(10000);
-                    //for (ushort i = 1; i < 1000; i++)
-                    //{
-                    //ResponseTextBox.Clear();
-                    //main.serialPort.Write("PR " + $"{i}" + "\r");
-                    //positionDictionary[i] = response;
-                    //response = "";
-                    //}
-                    //positionDictionary.ToList();
+                    bTimer = new System.Timers.Timer(2000);
+                    if (Convert.ToUInt16(StartReadTextBox.Text) > 0 && Convert.ToUInt16(StartReadTextBox.Text) < Convert.ToUInt16(FinishReadTextBox.Text) && Convert.ToUInt16(FinishReadTextBox.Text) < 1000)
+                    {
+                        for (int i = Convert.ToInt32(StartReadTextBox.Text); i <= Convert.ToInt32(FinishReadTextBox.Text); i++)
+                        {
+                            ResponseTextBox.Clear();
+                            response = "";
 
-                    bTimer.Start();
-                    bTimer.Elapsed += UnlockDownloadEvent;
+                            serialPort.Write("PR " + $"{i}" + "\r");
+                            if (sendCommandsLogs) AddSendLog("PR " + $"{i}" + "\r");
+                            Thread.Sleep(50);
+                            Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response });
+                            positionArray[i] = response;
+
+                        }
+                        var positions = new List<Position>();
+                        for (int i = Convert.ToInt32(StartReadTextBox.Text); i <= Convert.ToInt32(FinishReadTextBox.Text); i++)
+                        {
+                            positions.Add(new Position { Number = i, Coordinates = positionArray[i] });
+                        }
+                        PositionDataGrid.ItemsSource = positions;
+
+                        bTimer.Start();
+                        bTimer.Elapsed += UnlockDownloadEvent;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Position number must be at range: 0 < number < 1000", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }                    
                 }
             }
             catch (Exception ex)
@@ -828,5 +1164,20 @@ namespace IndustrialRobot.Views
                 MessageBox.Show(ex.Message);
             }
         }
+
+        private void ClearAllPositionsButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                serialPort.Write("PC 1,999" + "\r");
+                if (sendCommandsLogs) AddSendLog("PC 1,999" + "\r");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        #endregion
     }
 }
