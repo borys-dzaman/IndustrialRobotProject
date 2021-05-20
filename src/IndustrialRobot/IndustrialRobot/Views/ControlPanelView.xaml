@@ -321,13 +321,15 @@
 
             <TabItem Header="Positions">
                 <Grid>
-                    <Button x:Name="PositionDownloadButton" Content="Download position" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="182" Click="PositionDownloadButton_Click"/>
-                    <DataGrid x:Name="PositionDataGrid" HorizontalAlignment="Left" Height="322" Margin="10,54,0,0" VerticalAlignment="Top" Width="564" AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Pos.No:" Width="50"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Coordinates:" Width="*"></DataGridTextColumn>
-                        </DataGrid.Columns>
+                    <Button x:Name="PositionDownloadButton" Content="Download positions" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="182" Click="PositionDownloadButton_Click"/>
+                    <DataGrid x:Name="PositionDataGrid" HorizontalAlignment="Left" Height="322" Margin="10,54,0,0" VerticalAlignment="Top" Width="564">
+
                     </DataGrid>
+                    <Label Content="Start:" HorizontalAlignment="Left" Margin="215,7,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="StartReadTextBox" HorizontalAlignment="Left" Height="23" Margin="268,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="49" Text="1"/>
+                    <Label Content="Finish:" HorizontalAlignment="Left" Margin="336,7,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.089,0.515"/>
+                    <TextBox x:Name="FinishReadTextBox" HorizontalAlignment="Left" Height="23" Margin="402,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="49" Text="10"/>
+                    <Button x:Name="ClearAllPositionsButton" Content="Clear All" HorizontalAlignment="Left" Margin="482,10,0,0" VerticalAlignment="Top" Width="92" Click="ClearAllPositionsButton_Click"/>
                 </Grid>
                 <!--<TextBox x:Name="LogTextBox" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="4" Margin="0,5,0.5,5" IsReadOnly="True"/>-->
             </TabItem>

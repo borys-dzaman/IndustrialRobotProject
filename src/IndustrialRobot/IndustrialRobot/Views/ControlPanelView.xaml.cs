@@ -17,6 +17,7 @@ using REghZyFramework.Themes;
 using System.Threading;
 using IndustrialRobot.ViewModels;
 using System.Windows.Threading;
+using System.Data;
 
 namespace IndustrialRobot.Views
 {
@@ -35,7 +36,7 @@ namespace IndustrialRobot.Views
         delegate void PrintToResponseTextBox(string text);
         private Thickness myThickness;
         private ushort positionNumber = 1;
-        //string[] positionArray = new string[999];
+        public string[] positionArray = new string[1000];
         private string modified_response;
 
         public ControlPanelView(SerialPort sP)
@@ -770,6 +771,7 @@ namespace IndustrialRobot.Views
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
+                    Thread.Sleep(50);
                     Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text; // takes new response
                     double coordinate = 0;
@@ -804,6 +806,7 @@ namespace IndustrialRobot.Views
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
+                    Thread.Sleep(50);
                     Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text;
                     double coordinate = 0;
@@ -837,6 +840,7 @@ namespace IndustrialRobot.Views
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
+                    Thread.Sleep(50);
                     Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text;
                     double coordinate = 0;
@@ -870,6 +874,7 @@ namespace IndustrialRobot.Views
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
+                    Thread.Sleep(50);
                     Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text;
                     double coordinate = 0;
@@ -903,6 +908,7 @@ namespace IndustrialRobot.Views
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
+                    Thread.Sleep(50);
                     Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text;
                     double coordinate = 0;
@@ -936,6 +942,7 @@ namespace IndustrialRobot.Views
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
+                    Thread.Sleep(50);
                     Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text;
                     double coordinate = 0;
@@ -969,6 +976,12 @@ namespace IndustrialRobot.Views
         #endregion
 
         #region Positions:
+
+        class Position
+        {
+            public int Number { get; set; }
+            public string Coordinates { get; set; }
+        }
 
         private void UpPositionNumberButton_Click(object sender, RoutedEventArgs e)
         {
@@ -1030,18 +1043,33 @@ namespace IndustrialRobot.Views
                 if (blockDownload == false)
                 {
                     blockDownload = true;
-                    bTimer = new System.Timers.Timer(10000);
+                    bTimer = new System.Timers.Timer(2000);
+                    if (Convert.ToUInt16(StartReadTextBox.Text) > 0 && Convert.ToUInt16(StartReadTextBox.Text) < Convert.ToUInt16(FinishReadTextBox.Text) && Convert.ToUInt16(FinishReadTextBox.Text) < 1000)
+                    {
+                        for (int i = Convert.ToInt32(StartReadTextBox.Text); i <= Convert.ToInt32(FinishReadTextBox.Text); i++)
+                        {
+                            ResponseTextBox.Clear();
+                            response = "";
 
-                    //for (ushort i = 1; i < 1000; i++)
-                    //{
-                    //    ResponseTextBox.Clear();
-                    //    serialPort.Write("PR " + $"{i}" + "\r");
-                    //    positionDictionary[i] = response;
-                    //    response = "";
-                    //}
+                            serialPort.Write("PR " + $"{i}" + "\r");
+                            Thread.Sleep(50);
+                            Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response });
+                            positionArray[i] = response;
+                        }
+                        var positions = new List<Position>();
+                        for (int i = Convert.ToInt32(StartReadTextBox.Text); i <= Convert.ToInt32(FinishReadTextBox.Text); i++)
+                        {
+                            positions.Add(new Position { Number = i, Coordinates = positionArray[i] });
+                        }
+                        PositionDataGrid.ItemsSource = positions;
 
-                    bTimer.Start();
-                    bTimer.Elapsed += UnlockDownloadEvent;
+                        bTimer.Start();
+                        bTimer.Elapsed += UnlockDownloadEvent;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Position number must be at range: 0 < number < 1000", "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }                    
                 }
             }
             catch (Exception ex)
@@ -1050,7 +1078,18 @@ namespace IndustrialRobot.Views
             }
         }
 
-        #endregion
+        private void ClearAllPositionsButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                serialPort.Write("PC 1,999" + "\r");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
 
+        #endregion
     }
 }
