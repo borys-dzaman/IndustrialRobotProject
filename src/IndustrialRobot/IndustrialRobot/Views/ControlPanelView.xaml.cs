@@ -38,6 +38,7 @@ namespace IndustrialRobot.Views
         private ushort positionNumber = 1;
         public string[] positionArray = new string[1000];
         private string modified_response;
+        bool sendCommandsLogs = true;
 
         public ControlPanelView(SerialPort sP)
         {
@@ -79,6 +80,7 @@ namespace IndustrialRobot.Views
             try
             {
                 serialPort.Write("HLT" + "\r");
+                if (sendCommandsLogs) AddSendLog("HLT" + "\r");
             }
             catch (Exception ex)
             {
@@ -86,11 +88,26 @@ namespace IndustrialRobot.Views
             }
         }
 
+        private void AddSendLog(string log)
+        {
+            LogRichTextBox.CaretPosition.Paragraph.FontSize = 12;
+            LogRichTextBox.CaretPosition.Paragraph.Inlines.Add(new Run(DateTime.Now.ToString("HH:mm:ss ") + log) { Foreground = Brushes.Red });
+            LogRichTextBox.LineDown();
+        }
+
+        private void AddReceivedLog(string log)
+        {
+            LogRichTextBox.CaretPosition.Paragraph.FontSize = 12;
+            LogRichTextBox.CaretPosition.Paragraph.Inlines.Add(new Run(DateTime.Now.ToString("HH:mm:ss ") + log) { Foreground = Brushes.Blue });
+            LogRichTextBox.LineDown();
+        }
+
         private void ResetJointsButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 serialPort.Write("RS 0" + "\r");
+                if (sendCommandsLogs) AddSendLog("RS 0" + "\r");
             }
             catch (Exception ex)
             {
@@ -103,6 +120,7 @@ namespace IndustrialRobot.Views
             try
             {
                 serialPort.Write("HLT" + "\r");
+                if (sendCommandsLogs) AddSendLog("HLT" + "\r");
             }
             catch (Exception ex)
             {
@@ -115,6 +133,7 @@ namespace IndustrialRobot.Views
             try
             {
                 serialPort.Write("RS 0" + "\r");
+                if (sendCommandsLogs) AddSendLog("RS 0" + "\r");
             }
             catch (Exception ex)
             {
@@ -290,6 +309,7 @@ namespace IndustrialRobot.Views
         {
             ResponseTextBox.Clear();
             ResponseTextBox.Text += text;
+            AddReceivedLog(ResponseTextBox.Text);
         }
 
         private void SendCommandButton_Click(object sender, RoutedEventArgs e)
@@ -298,7 +318,9 @@ namespace IndustrialRobot.Views
             try
             {
                 serialPort.Write("SP " + SpeedSlider.Value.ToString() + "\r");
+                if (sendCommandsLogs) AddSendLog("SP " + SpeedSlider.Value.ToString() + "\r");
                 serialPort.Write(CommandTextBox.Text.ToString() + "\r");
+                if (sendCommandsLogs) AddSendLog(CommandTextBox.Text.ToString() + "\r");
                 CommandTextBox.Clear();
             }
             catch (Exception ex)
@@ -320,7 +342,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
                     serialPort.Write("DJ 1,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 1,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -342,7 +366,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
                     serialPort.Write("DJ 1," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 1," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -364,7 +390,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
                     serialPort.Write("DJ 2,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 2,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -386,7 +414,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
                     serialPort.Write("DJ 2," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 2," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -408,7 +438,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
                     serialPort.Write("DJ 3,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 3,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -430,7 +462,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
                     serialPort.Write("DJ 3," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 3," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -452,7 +486,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
                     serialPort.Write("DJ 4,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 4,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -474,7 +510,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
                     serialPort.Write("DJ 4," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 4," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -496,7 +534,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
                     serialPort.Write("DJ 5,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 5,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -518,7 +558,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
                     serialPort.Write("DJ 5," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 5," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -540,7 +582,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
                     serialPort.Write("DJ 6,-" + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 6,-" + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -562,7 +606,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SP " + JogSpeedSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("SP " + JogSpeedSlider.Value.ToString() + "\r");
                     serialPort.Write("DJ 6," + TurningAngleSlider.Value.ToString() + "\r");
+                    if (sendCommandsLogs) AddSendLog("DJ 6," + TurningAngleSlider.Value.ToString() + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -592,6 +638,7 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("GO" + "\r");
+                    if (sendCommandsLogs) AddSendLog("GO" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -613,6 +660,7 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("GC" + "\r");
+                    if (sendCommandsLogs) AddSendLog("GC" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -638,7 +686,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("DS " + XYZIncrement.Text + ",0,0" + "\r");
+                    if (sendCommandsLogs) AddSendLog("DS " + XYZIncrement.Text + ",0,0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -660,7 +710,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("DS -" + XYZIncrement.Text + ",0,0" + "\r");
+                    if (sendCommandsLogs) AddSendLog("DS -" + XYZIncrement.Text + ",0,0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -682,7 +734,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("DS 0," + XYZIncrement.Text + ",0" + "\r");
+                    if (sendCommandsLogs) AddSendLog("DS 0," + XYZIncrement.Text + ",0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -704,7 +758,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("DS 0,-" + XYZIncrement.Text + ",0" + "\r");
+                    if (sendCommandsLogs) AddSendLog("DS 0,-" + XYZIncrement.Text + ",0" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -726,7 +782,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("DS 0,0," + XYZIncrement.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("DS 0,0," + XYZIncrement.Text + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -748,7 +806,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("DS 0,0,-" + XYZIncrement.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("DS 0,0,-" + XYZIncrement.Text + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -770,7 +830,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
+                    if (sendCommandsLogs) AddSendLog("WH" + "\r");
                     Thread.Sleep(50);
                     Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text; // takes new response
@@ -782,7 +844,9 @@ namespace IndustrialRobot.Views
                     values[3] = coordinate.ToString();
                     modified_response = string.Join(",", values);
                     serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
                     serialPort.Write("MS 999" + "\r");
+                    if (sendCommandsLogs) AddSendLog("MS 999" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -805,7 +869,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
+                    if (sendCommandsLogs) AddSendLog("WH" + "\r");
                     Thread.Sleep(50);
                     Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text;
@@ -817,7 +883,9 @@ namespace IndustrialRobot.Views
                     values[3] = coordinate.ToString();
                     modified_response = string.Join(",", values);
                     serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
                     serialPort.Write("MS 999" + "\r");
+                    if (sendCommandsLogs) AddSendLog("MS 999" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -839,7 +907,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
+                    if (sendCommandsLogs) AddSendLog("WH" + "\r");
                     Thread.Sleep(50);
                     Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text;
@@ -851,7 +921,9 @@ namespace IndustrialRobot.Views
                     values[4] = coordinate.ToString();
                     modified_response = string.Join(",", values);
                     serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
                     serialPort.Write("MS 999" + "\r");
+                    if (sendCommandsLogs) AddSendLog("MS 999" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -873,7 +945,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
+                    if (sendCommandsLogs) AddSendLog("WH" + "\r");
                     Thread.Sleep(50);
                     Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text;
@@ -885,7 +959,9 @@ namespace IndustrialRobot.Views
                     values[4] = coordinate.ToString();
                     modified_response = string.Join(",", values);
                     serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
                     serialPort.Write("MS 999" + "\r");
+                    if (sendCommandsLogs) AddSendLog("MS 999" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -907,7 +983,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
+                    if (sendCommandsLogs) AddSendLog("WH" + "\r");
                     Thread.Sleep(50);
                     Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text;
@@ -919,7 +997,9 @@ namespace IndustrialRobot.Views
                     values[5] = coordinate.ToString();
                     modified_response = string.Join(",", values);
                     serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
                     serialPort.Write("MS 999" + "\r");
+                    if (sendCommandsLogs) AddSendLog("MS 999" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -941,7 +1021,9 @@ namespace IndustrialRobot.Views
                 if (blockAllButtons == false)
                 {
                     serialPort.Write("SD " + LinearSpeedTextBox.Text + "\r");
+                    if (sendCommandsLogs) AddSendLog("SD " + LinearSpeedTextBox.Text + "\r");
                     serialPort.Write("WH" + "\r");
+                    if (sendCommandsLogs) AddSendLog("WH" + "\r");
                     Thread.Sleep(50);
                     Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response }); // synchro. reads new WH response (idk but it reads 2 times)
                     response = ResponseTextBox.Text;
@@ -953,7 +1035,9 @@ namespace IndustrialRobot.Views
                     values[5] = coordinate.ToString();
                     modified_response = string.Join(",", values);
                     serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
+                    if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
                     serialPort.Write("MS 999" + "\r");
+                    if (sendCommandsLogs) AddSendLog("MS 999" + "\r");
                     if (SafeModeRadioButton.IsChecked == true || UltraSafeModeRadioButton.IsChecked == true)
                     {
                         blockAllButtons = true;
@@ -1024,6 +1108,7 @@ namespace IndustrialRobot.Views
                     if (Convert.ToUInt16(PositionNumberTextBox.Text) > 0 && Convert.ToUInt16(PositionNumberTextBox.Text) < 1000)
                     {
                         serialPort.Write("HE " + PositionNumberTextBox.Text + "\r");
+                        if (sendCommandsLogs) AddSendLog("HE " + PositionNumberTextBox.Text + "\r");
                     }
                     else
                     {
@@ -1052,9 +1137,11 @@ namespace IndustrialRobot.Views
                             response = "";
 
                             serialPort.Write("PR " + $"{i}" + "\r");
+                            if (sendCommandsLogs) AddSendLog("PR " + $"{i}" + "\r");
                             Thread.Sleep(50);
                             Dispatcher.Invoke(new PrintToResponseTextBox(TextToResponse), new object[] { response });
                             positionArray[i] = response;
+
                         }
                         var positions = new List<Position>();
                         for (int i = Convert.ToInt32(StartReadTextBox.Text); i <= Convert.ToInt32(FinishReadTextBox.Text); i++)
@@ -1083,6 +1170,7 @@ namespace IndustrialRobot.Views
             try
             {
                 serialPort.Write("PC 1,999" + "\r");
+                if (sendCommandsLogs) AddSendLog("PC 1,999" + "\r");
             }
             catch (Exception ex)
             {
