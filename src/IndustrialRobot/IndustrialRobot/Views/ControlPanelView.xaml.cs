@@ -838,10 +838,12 @@ namespace IndustrialRobot.Views
                     response = ResponseTextBox.Text; // takes new response
                     double coordinate = 0;
                     string[] values = response.Split(',');
+                    values[3] = values[3].Replace('.', ',');
                     coordinate = Convert.ToDouble(values[3]);
                     string increment = ABCIncrement.Text.Replace('.', ',');
                     coordinate += Convert.ToDouble(increment);
                     values[3] = coordinate.ToString();
+                    values[3] = values[3].Replace(',', '.');
                     modified_response = string.Join(",", values);
                     serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
                     if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
@@ -877,10 +879,12 @@ namespace IndustrialRobot.Views
                     response = ResponseTextBox.Text;
                     double coordinate = 0;
                     string[] values = response.Split(',');
+                    values[3] = values[3].Replace('.', ',');
                     coordinate = Convert.ToDouble(values[3]);
                     string increment = ABCIncrement.Text.Replace('.', ',');
                     coordinate -= Convert.ToDouble(increment);
                     values[3] = coordinate.ToString();
+                    values[3] = values[3].Replace(',', '.');
                     modified_response = string.Join(",", values);
                     serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
                     if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
@@ -915,10 +919,12 @@ namespace IndustrialRobot.Views
                     response = ResponseTextBox.Text;
                     double coordinate = 0;
                     string[] values = response.Split(',');
+                    values[4] = values[4].Replace('.', ',');
                     coordinate = Convert.ToDouble(values[4]);
                     string increment = ABCIncrement.Text.Replace('.', ',');
                     coordinate += Convert.ToDouble(increment);
                     values[4] = coordinate.ToString();
+                    values[4] = values[4].Replace(',', '.');
                     modified_response = string.Join(",", values);
                     serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
                     if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
@@ -953,10 +959,12 @@ namespace IndustrialRobot.Views
                     response = ResponseTextBox.Text;
                     double coordinate = 0;
                     string[] values = response.Split(',');
+                    values[4] = values[4].Replace(',', '.');
                     coordinate = Convert.ToDouble(values[4]);
                     string increment = ABCIncrement.Text.Replace('.', ',');
                     coordinate -= Convert.ToDouble(increment);
                     values[4] = coordinate.ToString();
+                    values[4] = values[4].Replace('.', ',');
                     modified_response = string.Join(",", values);
                     serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
                     if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);
@@ -991,9 +999,11 @@ namespace IndustrialRobot.Views
                     response = ResponseTextBox.Text;
                     double coordinate = 0;
                     string[] values = response.Split(',');
+                    values[5] = values[5].Replace('.', ',');
                     coordinate = Convert.ToDouble(values[5]);
                     string increment = ABCIncrement.Text.Replace('.', ',');
                     coordinate += Convert.ToDouble(increment);
+                    values[5] = values[5].Replace(',', '.');
                     values[5] = coordinate.ToString();
                     modified_response = string.Join(",", values);
                     serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
@@ -1029,10 +1039,12 @@ namespace IndustrialRobot.Views
                     response = ResponseTextBox.Text;
                     double coordinate = 0;
                     string[] values = response.Split(',');
+                    values[5] = values[5].Replace('.', ',');
                     coordinate = Convert.ToDouble(values[5]);
                     string increment = ABCIncrement.Text.Replace('.', ',');
                     coordinate -= Convert.ToDouble(increment);
                     values[5] = coordinate.ToString();
+                    values[5] = values[5].Replace('.', ',');
                     modified_response = string.Join(",", values);
                     serialPort.Write("PD 999 " + modified_response); // modified response already has "\r"
                     if (sendCommandsLogs) AddSendLog("PD 999 " + modified_response);

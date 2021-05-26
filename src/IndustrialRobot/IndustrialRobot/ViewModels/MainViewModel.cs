@@ -52,8 +52,8 @@ namespace IndustrialRobot.ViewModels
                     serialPort.Open();
                 }
                 ControlPanelView controlPanelView = new ControlPanelView(serialPort);
-                serialPort.Write("SP 1" + "\r");
-                serialPort.Write("WH" + "\r");
+                //serialPort.Write("SP 1" + "\r");
+                //serialPort.Write("WH" + "\r");
                 controlPanelView.ShowDialog();
             }
             catch (Exception ex)
